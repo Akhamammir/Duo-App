@@ -2,7 +2,16 @@
 http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap');
 :root {
+  /** primary duo**/
+  --ion-color-duop: #fbae42;
+  --ion-color-duop-rgb: 251,174,66;
+  --ion-color-duop-contrast: #000000;
+  --ion-color-duop-contrast-rgb: 0,0,0;
+  --ion-color-duop-shade: #dd993a;
+  --ion-color-duop-tint: #fbb655;
+
   /** primary **/
   --ion-color-primary: #222428;
   --ion-color-primary-rgb: 34, 36, 40;
@@ -146,7 +155,15 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-light-shade: #1e2023;
     --ion-color-light-tint: #383a3e;
   }
-
+  .ion-color-duop {
+    --ion-color-base: var(--ion-color-duop);
+    --ion-color-base-rgb: var(--ion-color-duop-rgb);
+    --ion-color-contrast: var(--ion-color-duop-contrast);
+    --ion-color-contrast-rgb: var(--ion-color-duop-contrast-rgb);
+    --ion-color-shade: var(--ion-color-duop-shade);
+    --ion-color-tint: var(--ion-color-duop-tint);
+  }
+  
   /*
    * iOS Dark Theme
    * -------------------------------------------
@@ -191,10 +208,12 @@ http://ionicframework.com/docs/theming/ */
    */
 
   .md body {
+
+    --ion-font-family: 'Quicksand', sans-serif;
     --ion-background-color: #121212;
     --ion-background-color-rgb: 18,18,18;
 
-    --ion-text-color: #ffffff;
+    --ion-text-color: #fbb655;
     --ion-text-color-rgb: 255,255,255;
 
     --ion-border-color: #222222;

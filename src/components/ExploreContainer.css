@@ -11,7 +11,6 @@
   font-size: 20px;
   line-height: 26px;
 }
-
 .container p {
   font-size: 16px;
   line-height: 22px;
@@ -21,4 +20,16 @@
 
 .container a {
   text-decoration: none;
+}
+ion-item{
+  margin-left: 20vw;
+  margin-right: 20vw;
+  --highlight-color-focused:#fbb655;
+  --border-radius:13px;
+  --border-width:2px!important;
+  --border-color:#fbb655;
+  --highlight-height:0px;
+}
+.item-has-focus ion-label.ion-color {  
+  color: var(--ion-color-base) !important;
 }

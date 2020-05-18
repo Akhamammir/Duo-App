@@ -1,0 +1,32 @@
+ion-item{
+    margin-left: 0vw;
+    margin-right: 0vw;
+  }
+ion-toggle {
+  --background-checked: #ffc16b;
+  --handle-background: #ffa424;
+  --handle-background-checked: #ffa424;
+  }
+  .Oof{
+    --highlight-color-focused:rgba(0,0,0,0)!important;
+    --border-radius:13px;
+    --background:rgba(0,0,0,0);
+    --border-width:0px!important;
+    --border-color:none;
+  }
+  .listingItem{
+    margin-top: 10px;
+    --highlight-height:0px!important;
+  }
+  .item-inner-highlight{
+    height: 0px!important;
+    --highlight-height:0px!important;
+  }
+  ion-popover{
+    --width: 70%!important;
+    
+  }
+  .popover-content{
+    padding: 10px!important;
+    --background:#202020!important;
+  }

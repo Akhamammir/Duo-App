@@ -1,12 +1,17 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton,
+    IonPage, IonTitle, IonToolbar, IonButton,
+     IonRouterOutlet } from '@ionic/react';
 import React from 'react';
 import { useParams } from 'react-router';
-import ExploreContainer from '../components/ExploreContainer';
-import './Page.css';
+import { IonReactRouter } from '@ionic/react-router';
+import { Redirect, Route } from 'react-router-dom';
+import MenuContainer from '../../components/MenuContainer/MenuContainer';
+import OpexContainer from '../../components/OpexContainer/OpexContainer';
+import './Main.css';
 interface ContainerProps {
-  history: any;
-}
-const Page: React.FC<ContainerProps> = ({history}) => {
+    history: any;
+  }
+const Main: React.FC<ContainerProps> = ({history}) => {
 
   const { name } = useParams<{ name: string; }>();
 
@@ -45,10 +50,11 @@ const Page: React.FC<ContainerProps> = ({history}) => {
             <IonTitle size="large">{name}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name={name} history={history} />
+            <Route path="/main" component={MenuContainer} exact/>
+            <Route path="/main/a" component={OpexContainer} />
       </IonContent>
     </IonPage>
   );
 };
 
-export default Page;
+export default Main;
