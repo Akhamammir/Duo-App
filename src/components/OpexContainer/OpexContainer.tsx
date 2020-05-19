@@ -21,7 +21,7 @@ let Storage = {
 }
 
 let trigger = 0, x=0;
-let triggerInner = 0
+let triggerInner = 0;
 const One: React.FC = ({}) => {
   const [place, setPlace] = useState<string>();
   const [operador, setOper] = useState<string>();
