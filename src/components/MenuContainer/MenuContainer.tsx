@@ -27,7 +27,7 @@ const MenuContainer: React.FC<ContainerProps> = ({ name, history }) => {
         mode="ios"
         onClick={
           ()=>{
-            history.push('/main')
+            history.push('/main/b')
           }
         }
       >

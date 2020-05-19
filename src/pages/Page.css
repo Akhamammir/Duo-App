@@ -4,6 +4,6 @@ ion-content{
 ion-toolbar{
     --background:#292929;
 }
-.header-mda::after{
+.header-md::after{
     background-image: none;
 }

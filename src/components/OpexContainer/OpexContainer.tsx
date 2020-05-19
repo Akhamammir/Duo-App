@@ -639,8 +639,15 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                 expand="block"
                 onClick={
                   ()=>{
+                    /*axios.post('http://duoserver.dyndns.org:3006/registro?',{ContadorInicial:hnicial, ContadorFinal:hfinal,
+                    HorasEfectivo: (new Date(Storage.hfinalT).getTime() - new Date(Storage.hinicialT).getTime())/3600000}).then()*/
+                    //Repertir Operacion de horas, para cada una
+                    //una vez q el objeto este asignado, habiliar el axios de arriba y pasar el objeto
                     console.log({ContadorInicial:hnicial, ContadorFinal:hfinal,
-                    HorasEfectivo: (new Date(Storage.hfinalT).getTime() - new Date(Storage.hinicialT).getTime())/3600000  })
+                    HorasEfectivo: (new Date(Storage.hfinalT).getTime() - new Date(Storage.hinicialT).getTime())/3600000,
+                    HorasOciosas: (new Date(Storage.hfinalO).getTime() - new Date(Storage.hinicialO).getTime())/3600000,
+                    HorasReparacion: (new Date(Storage.hfinalR).getTime() - new Date(Storage.hinicialR).getTime())/3600000,
+                  })
                   }
                 }
               >

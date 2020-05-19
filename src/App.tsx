@@ -36,6 +36,7 @@ const App: React.FC = () => {
             <Route path="/" component={Page} exact />
             <Route path="/main" component={Main} exact />
             <Route path="/main/a" component={Main} />
+            <Route path="/main/b" component={Main} />
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>
