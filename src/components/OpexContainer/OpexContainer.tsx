@@ -13,11 +13,11 @@ interface ContainerProps {
 let Storage = {
   machines:'', operador:'', place:'',
   hinicialT:'', hfinalT:'',
-   hinicialM:'', hfinalM:'', hinicialO:'',
-    hfinalO:'', hinicialR:'', hfinalR:'',
+  hinicialM:'', hfinalM:'', hinicialO:'',
+  hfinalO:'', hinicialR:'', hfinalR:'',
   gas:'', grease:'', diesel:'',
-   oil:'', oilM:'', oilT:'',
-  IdMaquina:'', IdEmpleado:''
+  oil:'', oilM:'', oilT:'',
+  IdMaquina:'', IdEmpleado:'',IdObra:''
 }
 
 let trigger = 0, x=0;
@@ -26,17 +26,22 @@ const One: React.FC = ({}) => {
   const [place, setPlace] = useState<string>();
   const [operador, setOper] = useState<string>();
   const [showPopoverInner, setShowPopoverInner] = useState(false);
+  const [showPopoverInner2, setShowPopoverInner2] = useState(false);
   const [listInner, setListInner] = useState([]);
+
   useEffect(()=>{
     console.log('gg')
   }, [Storage.machines]);
+  
   useEffect(()=>{
     Storage.operador = operador!
   }, [operador])
+  
   useEffect(()=>{
     Storage.place = place!
   }, [place])
-  useEffect(()=>{
+  
+  useEffect( () => {
     triggerInner > 0 ? (operador?.length == 0 ? console.log() : axios.get('http://duoserver.dyndns.org:3006/operadores?name='+operador).then(res=>{
       console.log(res.data.data)
       //alert(res.data.msg)
@@ -44,6 +49,16 @@ const One: React.FC = ({}) => {
       setShowPopoverInner(true)
     }) ): triggerInner+=1;
   },[operador])
+
+  useEffect(() => {
+    triggerInner > 0 ? (place?.length == 0 ? console.log() : axios.get('http://duoserver.dyndns.org:3006/obras?name=' + place).then(res => {
+      console.log(res.data.data)
+      //alert(res.data.msg)
+      setListInner(res.data.data[0])
+      setShowPopoverInner2(true)
+    })) : triggerInner += 1;
+  }, [place])
+
   return( 
     <span>
       <IonPopover
@@ -51,9 +66,9 @@ const One: React.FC = ({}) => {
         onDidDismiss={e => setShowPopoverInner(false)}
         mode="ios"
       >
-         <IonList lines="none">
-           {
-             listInner.map( (item:any) => {
+        <IonList lines="none"> 
+        {
+            listInner.map( (item:any) => {
               return(
                 <IonItem
                   className="listingItem"
@@ -73,10 +88,39 @@ const One: React.FC = ({}) => {
                   </IonLabel>
                 </IonItem>
               );
-             }
+            }
             )
-           }
-         </IonList>
+          }
+        </IonList>
+      </IonPopover>
+      <IonPopover
+        isOpen={showPopoverInner2}
+        onDidDismiss={e => setShowPopoverInner2(false)}
+        mode="ios"
+      >
+        <IonList lines="none"> 
+        {
+            listInner.map( (item:any) => {
+              return(
+                <IonItem
+                  className="listingItem"
+                  button={true}
+                  onClick={()=>{
+                    setPlace(item.Descripcion)
+                      Storage.IdObra= item.IdObra
+                      setShowPopoverInner2(false)
+                    }
+                  }
+                >
+                  <IonLabel>
+                    <h4>{item.Descripcion}</h4>
+                  </IonLabel>
+                </IonItem>
+              );
+            }
+            )
+          }
+        </IonList>
       </IonPopover>
       <br/>
       <IonRow>
@@ -498,7 +542,43 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       setShowPopover(true)
     }) ): trigger+=1;
   },[machine])
-  
+
+  const handleSubmit= () => {
+    const { IdEmpleado, IdMaquina, IdObra,
+            hinicialM, hfinalM,//Horas de transporte 
+            hinicialR, hfinalR, //Horas de Reparación
+            hinicialT, hfinalT, //Horas de Trabajo
+            hinicialO, hfinalO, //Horas Ociosas
+            machines, operador,
+            diesel, gas, grease, 
+            oil, oilM, oilT, place
+          } = Storage; 
+
+  console.log({Storage})
+
+    const data = {
+      IdEquipo: IdMaquina,
+      IdEmpleadoOperador: IdEmpleado,
+      Fecha: new Date(),
+      ContadorInicial: hnicial, //Horometro Inicial
+      ContadorFinal: hfinal, //Horometro Inicial
+      HrsEspera: (new Date(hinicialM).getTime() - new Date(hfinalM).getTime())/3600000,//horas de trasnporte
+      HrsInactivo: (new Date(hfinalO).getTime() - new Date(hinicialO).getTime())/3600000,//Horas Ociosas
+      HrsMantenimiento:  (new Date(hfinalR).getTime() - new Date(hinicialR).getTime())/3600000,//Horas de Reparación
+      IdObra: IdObra,
+      HorasEfectivo: (new Date(hfinalT).getTime() - new Date(hinicialT).getTime())/3600000,//Horas de Trabajo   
+    }
+    
+    //Axios POST data
+    axios.post('http://duoserver.dyndns.org:3006/registro?',{data})
+    /*{ContadorInicial:hnicial, ContadorFinal:hfinal,HorasEfectivo: (new Date(Storage.hfinalT).getTime() - new Date(Storage.hinicialT).getTime())/3600000})*/
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
   return (
     <div className="container">
       <IonPopover
@@ -506,9 +586,9 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
         onDidDismiss={e => setShowPopover(false)}
         mode="ios"
       >
-         <IonList lines="none">
-           {
-             list.map( (item:any) => {
+        <IonList lines="none">
+          {
+            list.map( (item:any) => {
               return(
                 <IonItem
                   className="listingItem"
@@ -637,19 +717,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                 color="duop"
                 mode="ios"
                 expand="block"
-                onClick={
-                  ()=>{
-                    /*axios.post('http://duoserver.dyndns.org:3006/registro?',{ContadorInicial:hnicial, ContadorFinal:hfinal,
-                    HorasEfectivo: (new Date(Storage.hfinalT).getTime() - new Date(Storage.hinicialT).getTime())/3600000}).then()*/
-                    //Repertir Operacion de horas, para cada una
-                    //una vez q el objeto este asignado, habiliar el axios de arriba y pasar el objeto
-                    console.log({ContadorInicial:hnicial, ContadorFinal:hfinal,
-                    HorasEfectivo: (new Date(Storage.hfinalT).getTime() - new Date(Storage.hinicialT).getTime())/3600000,
-                    HorasOciosas: (new Date(Storage.hfinalO).getTime() - new Date(Storage.hinicialO).getTime())/3600000,
-                    HorasReparacion: (new Date(Storage.hfinalR).getTime() - new Date(Storage.hinicialR).getTime())/3600000,
-                  })
-                  }
-                }
+                onClick={()=>{handleSubmit()}}
               >
                 Aceptar
               </IonButton>
