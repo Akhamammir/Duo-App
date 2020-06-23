@@ -63,7 +63,7 @@ const One: React.FC = ({}) => {
   }, [])
   
   useEffect( () => {
-    triggerInner > 0 ? (operador?.length == 0 ? console.log() : axios.get('http://duoserver.dyndns.org:3006/operadores?name='+operador).then(res=>{
+    triggerInner > 0 ? (operador?.length == 0 ? console.log() : axios.get('http://localhost:3006/operadores?name='+operador).then(res=>{
       console.log(res.data.data)
       //alert(res.data.msg)
       setListInner(res.data.data[0])
@@ -72,7 +72,7 @@ const One: React.FC = ({}) => {
   },[operador])
 
   useEffect(() => {
-    triggerInner > 0 ? (place?.length == 0 ? console.log() : axios.get('http://duoserver.dyndns.org:3006/obras?name=' + place).then(res => {
+    triggerInner > 0 ? (place?.length == 0 ? console.log() : axios.get('http://localhost:3006/obras?name=' + place).then(res => {
       //alert(res.data.msg)
       setListInner(res.data[0])
       setShowPopoverInner2(true)
@@ -587,7 +587,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       ? machine?.length == 0
         ? console.log()
         : axios
-            .get("http://duoserver.dyndns.org:3006/equipos?name=" + machine)
+            .get("http://localhost:3006/equipos?name=" + machine)
             .then((res) => {
               console.log(res.data[0]);
               //alert(res.data.msg)
@@ -633,7 +633,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       HrsEspera:(new Date(hfinalM).getTime() - new Date(hinicialM).getTime()) / 3600000, //horas de trasnporte
       HrsInactivo:(new Date(hfinalO).getTime() - new Date(hinicialO).getTime()) / 3600000, //Horas Ociosas
       HrsMantenimiento:(new Date(hfinalR).getTime() - new Date(hinicialR).getTime()) / 3600000, //Horas de Reparación
-      HorasEfectivo:(new Date(hfinalT).getTime() - new Date(hinicialT).getTime()) / 3600000, //Horas de Trabajo
+      HrsEfectivo:(new Date(hfinalT).getTime() - new Date(hinicialT).getTime()) / 3600000, //Horas de Trabajo
       TipoCombustible:tipoCombustible,
       CantidadGas: gas,
       CantidadDiesel:diesel,
@@ -644,7 +644,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     };
     // console.log("Submit_PrintStorage", Storage)
     // console.log("Submit_PrintSubmitData", data)
-    axios.post('http://duoserver.dyndns.org:3006/registro', { data })
+    axios.post('http://localhost:3006/registro', { data })
     .then(res => { console.log(res);})
     .catch( error => console.log(error));
   };
