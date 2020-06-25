@@ -127,7 +127,7 @@ const One: React.FC = ({}) => {
                   className="listingItem"
                   button={true}
                   onClick={()=>{
-                    setPlace(item.Descripcion);
+                    setPlace(item.IdObra);
                       Storage.IdObra = item.IdObra;
                       Storage.place = item.Descripcion;
                       setShowPopoverInner2(false);
@@ -135,7 +135,7 @@ const One: React.FC = ({}) => {
                   }
               >
                 <IonLabel>
-                  <h4>{item.Descripcion}</h4>
+                  <h4>{item.IdObra}</h4>
                 </IonLabel>
               </IonItem>
             );
@@ -180,6 +180,7 @@ const One: React.FC = ({}) => {
             </IonLabel>
             <IonInput
               value={place}
+              debounce={500}
               onIonChange={e => setPlace(e.detail.value!)}
               color="duop"
             ></IonInput>
@@ -664,6 +665,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                 button={true}
                 onClick={() => {
                   setInput(item.Nombre);
+                  setHini(item.ContadorActualEquipo)
                   Storage.IdMaquina = item.IdEquipo;
                   Storage.tipoCombustible= item.TipoCombustible
                   setShowPopover(false);
@@ -673,7 +675,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                   <img src={item.picture} />
                 </IonAvatar>
                 <IonLabel>
-                  <h4>{item.Nombre + " Placas: " + item.Placas}</h4>
+                  <h4>{item.IdEquipo + " Nombre: " + item.Nombre}</h4>
                   {item.Descripcion.trim() + " Año: " + item.Anio}
                 </IonLabel>
               </IonItem>
