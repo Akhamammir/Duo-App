@@ -34,7 +34,7 @@ let Storage = {
   tipoCombustible:''
 }
 
-let triggerInner = 0, triggerInner2 = 0, trigger = 0;
+let triggerInner = -1, triggerInner2 = -1, trigger = -1;
 const One: React.FC = ({}) => {
   const [place, setPlace] = useState<string>();
   const [operador, setOper] = useState<string>();
@@ -43,11 +43,13 @@ const One: React.FC = ({}) => {
   const [listInner, setListInner] = useState([]);
 
   useEffect(()=>{
-    console.log('gg')
+    console.log('gg', Storage.operador)
+    setOper(Storage.operador)
+    setPlace(Storage.place)
   }, [Storage.machines]);
   
   useEffect(()=>{
-    // Storage.operador = operador!
+    //Storage.operador = operador!
     
   }, [operador])
   
@@ -67,7 +69,7 @@ const One: React.FC = ({}) => {
       //alert(res.data.msg)
       setListInner(res.data.data[0])
       setShowPopoverInner(true)
-    }) ): triggerInner+=1;
+    }) ): triggerInner = triggerInner + 1;
   },[operador])
 
   useEffect(() => {
@@ -75,7 +77,7 @@ const One: React.FC = ({}) => {
       //alert(res.data.msg)
       setListInner(res.data[0])
       setShowPopoverInner2(true)
-    })) : triggerInner += 1;
+    })) : triggerInner2 = triggerInner2 + 1;
   }, [place])
 
   return( 
@@ -526,6 +528,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
   useIonViewDidEnter(() => {
     setPos("0");
   });
+  //----------------------
   useEffect(() => {
     Storage.machines = machine!;
     console.log(Storage.machines);
@@ -534,11 +537,12 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     Storage.machines = machine!;
     console.log(Storage.machines);
   }, [machine]);
+  //---------------------
   useEffect(() => {
     trigger === 0
       ? machine?.length == 0
         ? console.log()
-        : axios.get("http://localhost:3006/equipos?name=" + machine)
+        : axios.get("http://localhost:3006/equipos/main?name=" + machine)
             .then((res) => {
               console.log(res.data[0]);
               //alert(res.data.msg)
@@ -613,18 +617,24 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                 className="listingItem"
                 button={true}
                 onClick={() => {
-                  triggerInner = 0; triggerInner2 = 0; trigger = 0;
-                  setInput(item.Nombre);
+                  triggerInner = -1; triggerInner2 = -1; trigger = -1;
                   setHini(item.ContadorActualEquipo)
-                  axios.get("http://localhost:3006/equipos/driver?name=" + machine)
+                  axios.get("http://localhost:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
                     .then((res) => {
-                    console.log(res.data[0]);
+                    console.log(res.data[0][0]);
+                    Storage.operador = res.data[0][0].Nombre
+                    Storage.IdEmpleado = res.data[0][0].IdEmpleado
                   })
-                  axios.get("http://localhost:3006/equipos/obras?name=" + machine)
+                  axios.get("http://localhost:3006/equipos/obras?name=" + item.IdObra)
                     .then((res) => {
-                    console.log(res.data[0]);
+                    console.log(res.data[0][0]);
+                    Storage.place = res.data[0][0].NombreCorto
+                    Storage.IdObra = res.data[0][0].IdObra
+                  }).then(()=>{ 
+                    Storage.IdMaquina = item.IdEquipo;
+                    setInput(item.Nombre);
                   })
-                  Storage.IdMaquina = item.IdEquipo;
+                  
                   Storage.tipoCombustible= item.TipoCombustible
                   setShowPopover(false);
                 }}
