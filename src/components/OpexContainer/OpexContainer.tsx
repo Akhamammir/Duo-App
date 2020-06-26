@@ -34,8 +34,7 @@ let Storage = {
   tipoCombustible:''
 }
 
-let trigger = 0, x=0;
-let triggerInner = 0;
+let triggerInner = 0, triggerInner2 = 0, trigger = 0;
 const One: React.FC = ({}) => {
   const [place, setPlace] = useState<string>();
   const [operador, setOper] = useState<string>();
@@ -63,7 +62,7 @@ const One: React.FC = ({}) => {
   }, [])
   
   useEffect( () => {
-    triggerInner > 0 ? (operador?.length == 0 ? console.log() : axios.get('http://localhost:3006/operadores?name='+operador).then(res=>{
+    triggerInner === 0 ? (operador?.length == 0 ? console.log() : axios.get('http://localhost:3006/operadores?name='+operador).then(res=>{
       console.log(res.data.data)
       //alert(res.data.msg)
       setListInner(res.data.data[0])
@@ -72,7 +71,7 @@ const One: React.FC = ({}) => {
   },[operador])
 
   useEffect(() => {
-    triggerInner > 0 ? (place?.length == 0 ? console.log() : axios.get('http://localhost:3006/obras?name=' + place).then(res => {
+    triggerInner2 === 0 ? (place?.length == 0 ? console.log() : axios.get('http://localhost:3006/obras?name=' + place).then(res => {
       //alert(res.data.msg)
       setListInner(res.data[0])
       setShowPopoverInner2(true)
@@ -536,14 +535,13 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     console.log(Storage.machines);
   }, [machine]);
   useEffect(() => {
-    trigger > 0
+    trigger === 0
       ? machine?.length == 0
         ? console.log()
         : axios.get("http://localhost:3006/equipos?name=" + machine)
             .then((res) => {
               console.log(res.data[0]);
               //alert(res.data.msg)
-              x = 1;
               setList(res.data[0]);
               setShowPopover(true);
             })
@@ -615,9 +613,14 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                 className="listingItem"
                 button={true}
                 onClick={() => {
+                  triggerInner = 0; triggerInner2 = 0; trigger = 0;
                   setInput(item.Nombre);
                   setHini(item.ContadorActualEquipo)
                   axios.get("http://localhost:3006/equipos/driver?name=" + machine)
+                    .then((res) => {
+                    console.log(res.data[0]);
+                  })
+                  axios.get("http://localhost:3006/equipos/obras?name=" + machine)
                     .then((res) => {
                     console.log(res.data[0]);
                   })
