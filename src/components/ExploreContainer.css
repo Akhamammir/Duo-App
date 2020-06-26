@@ -24,11 +24,22 @@
 ion-item{
   margin-left: 20vw;
   margin-right: 20vw;
+  color:#fbae42;
   --highlight-color-focused:#fbb655;
   --border-radius:13px;
   --border-width:2px!important;
   --border-color:#fbb655;
   --highlight-height:0px;
+  --background:#222428;
+  --ion-font-family: 'Quicksand', sans-serif;
+}
+ion-button{
+  --ion-color-base: #fbae42;
+  --border-color:red;
+  --ion-color-contrast: #222428;
+  --background-color:#ffc409;
+  --border-width: 2px;
+  --ion-font-family: 'Quicksand', sans-serif;
 }
 .item-has-focus ion-label.ion-color {  
   color: var(--ion-color-base) !important;

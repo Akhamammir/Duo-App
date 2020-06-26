@@ -26,6 +26,13 @@ ion-toggle {
     --width: 70%!important;
     
   }
+  ion-segment{
+    --background: #414141;
+  }
+  ion-segment-button{
+    --background-checked: #595959;
+    --indicator-color:#ffa424;
+  }
   .popover-content{
     padding: 10px!important;
     --background:#202020!important;
