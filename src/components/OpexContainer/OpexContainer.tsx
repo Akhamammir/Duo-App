@@ -471,22 +471,6 @@ const Three: React.FC = ({}) => {
             </IonLabel>
           </IonItem>
         </IonCol>
-        <IonCol>
-          <IonItem>
-            <IonInput
-              value={oil}
-              placeholder="Aceite Hidraulico"
-              color="duop"
-              onIonChange={(e) => {
-                setOil(e.detail.value!)
-                Storage.oil=e.detail.value!
-              }}
-            ></IonInput>
-            <IonLabel position="fixed" color="duop">
-              Lts.
-            </IonLabel>
-          </IonItem>
-        </IonCol>
       </IonRow>
       <IonRow>
         <IonCol>
@@ -505,22 +489,6 @@ const Three: React.FC = ({}) => {
             </IonLabel>
           </IonItem>
         </IonCol>
-        <IonCol>
-          <IonItem>
-            <IonInput
-              value={oilT}
-              placeholder="Aceite Transmision"
-              color="duop"
-              onIonChange={(e) => {
-                setOilT(e.detail.value!)
-                Storage.oilT=e.detail.value!
-              }}
-            ></IonInput>
-            <IonLabel position="fixed" color="duop">
-              Lts.
-            </IonLabel>
-          </IonItem>
-        </IonCol>
       </IonRow>
       <IonRow>
         <IonCol>
@@ -532,22 +500,6 @@ const Three: React.FC = ({}) => {
               onIonChange={(e) => {
                 setGrease(e.detail.value!)
                 Storage.grease=e.detail.value!
-              }}
-            ></IonInput>
-            <IonLabel position="fixed" color="duop">
-              Lts.
-            </IonLabel>
-          </IonItem>
-        </IonCol>
-        <IonCol>
-          <IonItem>
-            <IonInput
-              value={oilM}
-              placeholder="Aceite Motor"
-              color="duop"
-              onIonChange={(e) => {
-                setOilM(e.detail.value!)
-                Storage.oilM=e.detail.value!
               }}
             ></IonInput>
             <IonLabel position="fixed" color="duop">
@@ -587,8 +539,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     trigger > 0
       ? machine?.length == 0
         ? console.log()
-        : axios
-            .get("http://localhost:3006/equipos?name=" + machine)
+        : axios.get("http://localhost:3006/equipos?name=" + machine)
             .then((res) => {
               console.log(res.data[0]);
               //alert(res.data.msg)
@@ -666,6 +617,10 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                 onClick={() => {
                   setInput(item.Nombre);
                   setHini(item.ContadorActualEquipo)
+                  axios.get("http://localhost:3006/equipos/driver?name=" + machine)
+                    .then((res) => {
+                    console.log(res.data[0]);
+                  })
                   Storage.IdMaquina = item.IdEquipo;
                   Storage.tipoCombustible= item.TipoCombustible
                   setShowPopover(false);
