@@ -568,6 +568,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
   const [Folio, setFolio] = useState<string>();
   const [hnicialComb, setHiniComb] = useState<string>();
   const [list, setList] = useState([]);
+  const [listData, setListData] = useState([]);
   const [showPopover, setShowPopover] = useState(false);
   const testdata = [{
     text: 'RTX-008, Retroexcavadora mod 2013',
@@ -597,7 +598,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       console.log('Cancel clicked');
     }
   }]
-  const listdata:any[] = []
+  const listdata:any= []
   const scanCode = async () => {
     const data = await BarcodeScanner.scan();
     //alert(JSON.stringify(data));
@@ -626,6 +627,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
               console.log(res.data[0]);
               //alert(res.data.msg)
               res.data[0].forEach((item:any)=>{
+                console.log(item)
                 listdata.push({
                   text: item.IdEquipo + ', ' + item.Nombre,
                   handler: () => {
@@ -633,7 +635,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                     setHini(item.ContadorActualEquipo)
                     axios.get("http://localhost:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
                       .then((res) => {
-                      console.log(res.data[0][0]);
+                      console.log(res.data);
                       Storage.operador = res.data[0][0].Nombre
                       Storage.IdEmpleado = res.data[0][0].IdEmpleado
                     })
@@ -651,6 +653,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                     setShowPopover(false);
                   }
                 })
+                setListData(listdata)
               })
               setList(res.data[0]);
               setShowPopover(true);
@@ -766,11 +769,11 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
         </IonList>
       </IonPopover>
       <IonActionSheet
-        isOpen={true}
+        isOpen={showPopover}
         mode="ios"
         onDidDismiss={() => setShowPopover(false)}
         cssClass='actionsheet'
-        buttons={listdata}
+        buttons={listData}
       >
       </IonActionSheet>
       <IonGrid style={{ marginLeft: "5vw", marginRight: "5vw" }}>
@@ -842,7 +845,8 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
               <IonInput
                 value={hnicialComb}
                 color="duop"
-                readonly={true}
+                type="number"
+                readonly={false}
                 onIonChange={e => setHiniComb(e.detail.value!)}
               ></IonInput>
             </IonItem>
