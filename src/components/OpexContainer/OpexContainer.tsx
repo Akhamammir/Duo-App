@@ -1,22 +1,12 @@
 import React, {useState, useEffect, useRef, useLayoutEffect, useCallback, useMemo} from 'react';
 import './OpexContainer.css';
 import {
-  IonInput,
-  IonItem,
-  IonLabel,
-  IonButton,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonDatetime,
-  IonToggle,
-  IonSegment,
-  IonSegmentButton,
-  useIonViewDidEnter,
-  IonPopover,
-  IonList,
-  IonAvatar
+  IonInput, IonItem, IonLabel, IonButton, IonGrid,
+   IonRow, IonCol, IonDatetime, IonToggle, IonSegment,
+    IonSegmentButton, useIonViewDidEnter, IonPopover,IonList,
+     IonAvatar, IonTextarea,IonActionSheet
 } from '@ionic/react';
+import { trash, share, caretForwardCircle, heart, close } from 'ionicons/icons';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import axios from 'axios';
 interface ContainerProps {
@@ -35,13 +25,20 @@ let Storage = {
 }
 
 let triggerInner = -1, triggerInner2 = -1, trigger = -1;
+
 const One: React.FC = ({}) => {
   const [place, setPlace] = useState<string>();
   const [operador, setOper] = useState<string>();
   const [showPopoverInner, setShowPopoverInner] = useState(false);
   const [showPopoverInner2, setShowPopoverInner2] = useState(false);
   const [listInner, setListInner] = useState([]);
-
+  const innerdata1:any[] = [], innerdata2:any[] = [];
+  /*{
+    text: 'RTX-008, Retroexcavadora mod 2013',
+    handler: () => {
+      console.log('Delete clicked');
+    }
+  }*/
   useEffect(()=>{
     console.log('gg', Storage.operador)
     setOper(Storage.operador)
@@ -68,6 +65,17 @@ const One: React.FC = ({}) => {
       console.log(res.data.data)
       //alert(res.data.msg)
       setListInner(res.data.data[0])
+      res.data.data[0].forEach((item:any)=>{
+        innerdata1.push({
+          text: item.Nombre,
+          handler: () => {
+            setOper(item.Nombre)
+            Storage.IdEmpleado = item.IdEmpleado
+            Storage.operador= item.Nombre
+            setShowPopoverInner(false)
+          }
+        })
+      })
       setShowPopoverInner(true)
     }) ): triggerInner = triggerInner + 1;
   },[operador])
@@ -76,6 +84,17 @@ const One: React.FC = ({}) => {
     triggerInner2 === 0 ? (place?.length == 0 ? console.log() : axios.get('http://localhost:3006/obras?name=' + place).then(res => {
       //alert(res.data.msg)
       setListInner(res.data[0])
+      res.data[0].forEach((item:any)=>{
+        innerdata2.push({
+          text: item.IdObra,
+          handler: () => {
+            setPlace(item.IdObra);
+              Storage.IdObra = item.IdObra;
+              Storage.place = item.Descripcion;
+              setShowPopoverInner2(false);
+            }
+        })
+      })
       setShowPopoverInner2(true)
     })) : triggerInner2 = triggerInner2 + 1;
   }, [place])
@@ -83,7 +102,7 @@ const One: React.FC = ({}) => {
   return( 
     <span>
       <IonPopover
-        isOpen={showPopoverInner}
+        isOpen={false}
         onDidDismiss={e => setShowPopoverInner(false)}
         mode="ios"
       >
@@ -116,7 +135,7 @@ const One: React.FC = ({}) => {
         </IonList>
       </IonPopover>
       <IonPopover
-        isOpen={showPopoverInner2}
+        isOpen={false}
         onDidDismiss={e => setShowPopoverInner2(false)}
         mode="ios"
       >
@@ -143,6 +162,22 @@ const One: React.FC = ({}) => {
           })}
         </IonList>
       </IonPopover>
+      <IonActionSheet
+        isOpen={showPopoverInner}
+        mode="ios"
+        onDidDismiss={() => setShowPopoverInner(false)}
+        cssClass='actionsheet'
+        buttons={innerdata1}
+      >
+      </IonActionSheet>
+      <IonActionSheet
+        isOpen={showPopoverInner2}
+        mode="ios"
+        onDidDismiss={() => setShowPopoverInner2(false)}
+        cssClass='actionsheet'
+        buttons={innerdata2}
+      >
+      </IonActionSheet>
       <br />
       <IonRow>
         <IonCol>
@@ -154,6 +189,7 @@ const One: React.FC = ({}) => {
               value={operador}
               debounce={450}
               color="duop"
+              clearInput={true}
               onIonChange={(e) => setOper(e.detail.value!)}
             ></IonInput>
           </IonItem>
@@ -182,6 +218,7 @@ const One: React.FC = ({}) => {
             <IonInput
               value={place}
               debounce={500}
+              clearInput={true}
               onIonChange={e => setPlace(e.detail.value!)}
               color="duop"
             ></IonInput>
@@ -192,6 +229,7 @@ const One: React.FC = ({}) => {
     </span>
   );
 };
+
 const Two: React.FC = ({}) => {
   const [checked, setChecked] = useState(false);
   const [checked2, setChecked2] = useState(false);
@@ -418,6 +456,7 @@ const Two: React.FC = ({}) => {
     </span>
   );
 };
+
 const Three: React.FC = ({}) => {
   const [gas, setGas] = useState<string>();
   const [diesel, setDiesel] = useState<string>();
@@ -462,6 +501,8 @@ const Three: React.FC = ({}) => {
               value={gas}
               placeholder="Gasolina"
               color="duop"
+              type="number"
+              clearInput={true}
               onIonChange={(e) => {
                 setGas(e.detail.value!)
                 Storage.gas=e.detail.value!
@@ -480,6 +521,8 @@ const Three: React.FC = ({}) => {
               value={diesel}
               placeholder="Diesel"
               color="duop"
+              type="number"
+              clearInput={true}
               onIonChange={(e) => {
                 setDiesel(e.detail.value!)
                 Storage.diesel=e.detail.value!
@@ -496,8 +539,10 @@ const Three: React.FC = ({}) => {
           <IonItem>
             <IonInput
               value={grease}
-              placeholder="Grasa"
+              placeholder="Gasolina Magna"
               color="duop"
+              clearInput={true}
+              type="number"
               onIonChange={(e) => {
                 setGrease(e.detail.value!)
                 Storage.grease=e.detail.value!
@@ -512,13 +557,47 @@ const Three: React.FC = ({}) => {
     </span>
   );
 };
+
 const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
   const [machine, setInput] = useState<string>();
   const [hnicial, setHini] = useState<string>();
   const [hfinal, setHFin] = useState<string>();
   const [position, setPos] = useState<string>();
+  const [Notas, setNotas] = useState<string>();
+  const [Fecha, setFecha] = useState<string>();
+  const [Folio, setFolio] = useState<string>();
+  const [hnicialComb, setHiniComb] = useState<string>();
   const [list, setList] = useState([]);
   const [showPopover, setShowPopover] = useState(false);
+  const testdata = [{
+    text: 'RTX-008, Retroexcavadora mod 2013',
+    handler: () => {
+      console.log('Delete clicked');
+    }
+  }, {
+    text: 'MTC-004, Motoconformadora mod 2013',
+    handler: () => {
+      console.log('Share clicked');
+    }
+  }, {
+    text: 'AV-007, Apisonador vibratorio mod 2018',
+    handler: () => {
+      console.log('Play clicked');
+    }
+  }, {
+    text: 'RTX-013, Retroexcavadora mod 2019',
+    handler: () => {
+      console.log('Favorite clicked');
+    }
+  }, {
+    text: 'Cancelar',
+    role: 'destructive',
+    icon: close,
+    handler: () => {
+      console.log('Cancel clicked');
+    }
+  }]
+  const listdata:any[] = []
   const scanCode = async () => {
     const data = await BarcodeScanner.scan();
     //alert(JSON.stringify(data));
@@ -546,12 +625,44 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
             .then((res) => {
               console.log(res.data[0]);
               //alert(res.data.msg)
+              res.data[0].forEach((item:any)=>{
+                listdata.push({
+                  text: item.IdEquipo + ', ' + item.Nombre,
+                  handler: () => {
+                    triggerInner = -1; triggerInner2 = -1; trigger = -1;
+                    setHini(item.ContadorActualEquipo)
+                    axios.get("http://localhost:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
+                      .then((res) => {
+                      console.log(res.data[0][0]);
+                      Storage.operador = res.data[0][0].Nombre
+                      Storage.IdEmpleado = res.data[0][0].IdEmpleado
+                    })
+                    axios.get("http://localhost:3006/equipos/obras?name=" + item.IdObra)
+                      .then((res) => {
+                      console.log(res.data[0][0]);
+                      Storage.place = res.data[0][0].NombreCorto
+                      Storage.IdObra = res.data[0][0].IdObra
+                    }).then(()=>{ 
+                      Storage.IdMaquina = item.IdEquipo;
+                      setInput(item.Nombre);
+                    })
+                    
+                    Storage.tipoCombustible= item.TipoCombustible
+                    setShowPopover(false);
+                  }
+                })
+              })
               setList(res.data[0]);
               setShowPopover(true);
             })
       : (trigger += 1);
   }, [machine]);
-
+  
+  let numeroloogy = (x:string) => {
+    x = x.indexOf('.') != -1 && x.split('.')[1].length > 2 ? 
+     x.split('.')[0] + '.' + x.split('.')[1].substring(0,1) : x;
+    return x;
+  }
   const handleSubmit = () => {
     const {
       IdEmpleado,
@@ -595,6 +706,9 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       CantidadOil:oil,
       CantidadOilM:oilM,
       CantidadOilT:oilT,
+      FolioInternoSuministro:Folio,
+      Notas:Notas, Fecha:Fecha,
+      ContadorEquipo: hnicialComb
     };
     // console.log("Submit_PrintStorage", Storage)
     // console.log("Submit_PrintSubmitData", data)
@@ -606,7 +720,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
   return (
     <div className="container">
       <IonPopover
-        isOpen={showPopover}
+        isOpen={false}
         onDidDismiss={(e) => setShowPopover(false)}
         mode="ios"
       >
@@ -651,7 +765,47 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
           })}
         </IonList>
       </IonPopover>
+      <IonActionSheet
+        isOpen={true}
+        mode="ios"
+        onDidDismiss={() => setShowPopover(false)}
+        cssClass='actionsheet'
+        buttons={listdata}
+      >
+      </IonActionSheet>
       <IonGrid style={{ marginLeft: "5vw", marginRight: "5vw" }}>
+      <IonRow>
+        <IonCol>
+          <IonItem>
+            <IonLabel position="floating" color="duop">
+              Ingrese Folio
+            </IonLabel>
+            <IonInput
+              value={Folio}
+              color="duop"
+              clearInput={true}
+              debounce={450}
+              onIonChange={(e) => {
+                setFolio(e.detail.value!);
+              }}
+            ></IonInput>
+          </IonItem>
+        </IonCol>
+        <IonCol></IonCol>
+        <IonCol>
+          <IonItem>
+            <IonLabel>Fecha:</IonLabel>
+            <IonDatetime
+              displayFormat="DD:MM:YYYY"
+              value={Fecha}
+              color="duop"
+              onIonChange={(e) => {
+                setFecha(e.detail.value!)
+              }}
+            ></IonDatetime>
+          </IonItem>
+        </IonCol>
+      </IonRow>
         <IonRow>
           <IonCol>
             <IonItem>
@@ -661,6 +815,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
               <IonInput
                 value={machine}
                 color="duop"
+                clearInput={true}
                 debounce={450}
                 onIonChange={(e) => {
                   setInput(e.detail.value!);
@@ -675,6 +830,25 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
         <IonRow>
           <IonCol></IonCol>
         </IonRow>
+        
+        {
+        position == '2' ? 
+        <IonRow>
+          <IonCol>
+          <IonItem>
+              <IonLabel position="floating" color="duop">
+                Horometro Inicial
+              </IonLabel>
+              <IonInput
+                value={hnicialComb}
+                color="duop"
+                readonly={true}
+                onIonChange={e => setHiniComb(e.detail.value!)}
+              ></IonInput>
+            </IonItem>
+          </IonCol>
+        </IonRow>
+        :
         <IonRow>
           <IonCol>
             <IonItem>
@@ -684,6 +858,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
               <IonInput
                 value={hnicial}
                 color="duop"
+                readonly={true}
                 onIonChange={e => setHini(e.detail.value!)}
               ></IonInput>
             </IonItem>
@@ -696,11 +871,15 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
               <IonInput
                 value={hfinal}
                 color="duop"
-                onIonChange={e => setHFin(e.detail.value!)}
+                clearInput={true}
+                type="number"
+                onIonChange={e => setHFin(numeroloogy(e.detail.value!))}
               ></IonInput>
             </IonItem>
           </IonCol>
         </IonRow>
+        }
+
         <IonRow>
           <IonCol></IonCol>
         </IonRow>
@@ -732,7 +911,15 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
           position == '2' ? <Three/> : <One/>
         }
           
-          
+          <IonRow>
+          <IonCol>
+            <IonItem>
+              <IonLabel position="floating">Notas:</IonLabel>
+              <IonTextarea value={Notas} onIonChange={e => setNotas(e.detail.value!)}></IonTextarea>
+            </IonItem>
+          </IonCol>
+          </IonRow>
+
           <IonRow>
             <IonCol>
               <IonButton

@@ -37,3 +37,9 @@ ion-toggle {
     padding: 10px!important;
     --background:#202020!important;
   }
+  .input-clear-icon.sc-ion-input-md{
+    margin-top: -15px;
+  }
+  .actionsheet{
+    font-family: 'Quicksand', sans-serif;
+  }

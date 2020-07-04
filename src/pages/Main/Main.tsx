@@ -62,7 +62,7 @@ const Main: React.FC<ContainerProps> = ({history}) => {
             <IonTitle size="large">{name}</IonTitle>
           </IonToolbar>
         </IonHeader>
-            <Route path="/main" component={MenuContainer} exact/>
+        <Route path="/main" component={OpexContainer} exact/>
             <Route path="/main/a" component={OpexContainer} />
             <Route path="/main/b" component={CombContainer} />
       </IonContent>
