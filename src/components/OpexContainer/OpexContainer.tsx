@@ -32,7 +32,9 @@ const One: React.FC = ({}) => {
   const [showPopoverInner, setShowPopoverInner] = useState(false);
   const [showPopoverInner2, setShowPopoverInner2] = useState(false);
   const [listInner, setListInner] = useState([]);
-  const innerdata1:any[] = [], innerdata2:any[] = [];
+  const [listInnerData, setListInnerData] = useState([]);
+  const [listInnerData2, setListInnerData2] = useState([]);
+  const innerdata1:any = [], innerdata2:any = [];
   /*{
     text: 'RTX-008, Retroexcavadora mod 2013',
     handler: () => {
@@ -75,6 +77,7 @@ const One: React.FC = ({}) => {
             setShowPopoverInner(false)
           }
         })
+        setListInnerData(innerdata1)
       })
       setShowPopoverInner(true)
     }) ): triggerInner = triggerInner + 1;
@@ -94,6 +97,7 @@ const One: React.FC = ({}) => {
               setShowPopoverInner2(false);
             }
         })
+        setListInnerData2(innerdata2)
       })
       setShowPopoverInner2(true)
     })) : triggerInner2 = triggerInner2 + 1;
@@ -167,7 +171,7 @@ const One: React.FC = ({}) => {
         mode="ios"
         onDidDismiss={() => setShowPopoverInner(false)}
         cssClass='actionsheet'
-        buttons={innerdata1}
+        buttons={listInnerData}
       >
       </IonActionSheet>
       <IonActionSheet
@@ -175,7 +179,7 @@ const One: React.FC = ({}) => {
         mode="ios"
         onDidDismiss={() => setShowPopoverInner2(false)}
         cssClass='actionsheet'
-        buttons={innerdata2}
+        buttons={listInnerData2}
       >
       </IonActionSheet>
       <br />
@@ -699,8 +703,8 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       ContadorInicial: hnicial, //Horometro Inicial
       ContadorFinal: hfinal, //Horometro Inicial
       HrsEspera:(new Date(hfinalM).getTime() - new Date(hinicialM).getTime()) / 3600000, //horas de trasnporte
-      HrsInactivo:(new Date(hfinalO).getTime() - new Date(hinicialO).getTime()) / 3600000, //Horas Ociosas
-      HrsMantenimiento:(new Date(hfinalR).getTime() - new Date(hinicialR).getTime()) / 3600000, //Horas de Reparación
+      //HrsInactivo:(new Date(hfinalO).getTime() - new Date(hinicialO).getTime()) / 3600000, //Horas Ociosas
+      //HrsMantenimiento:(new Date(hfinalR).getTime() - new Date(hinicialR).getTime()) / 3600000, //Horas de Reparación
       HrsEfectivo:(new Date(hfinalT).getTime() - new Date(hinicialT).getTime()) / 3600000, //Horas de Trabajo
       TipoCombustible:tipoCombustible,
       CantidadGas: gas,
