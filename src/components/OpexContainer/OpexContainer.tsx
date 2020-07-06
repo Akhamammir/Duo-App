@@ -63,7 +63,7 @@ const One: React.FC = ({}) => {
 
   }, [])
   
-  useEffect( () => {
+  /*useEffect( () => {
     triggerInner === 0 ? (operador?.length == 0 ? console.log() : axios.get('http://localhost:3006/operadores?name='+operador).then(res=>{
       console.log(res.data.data)
       //alert(res.data.msg)
@@ -82,9 +82,30 @@ const One: React.FC = ({}) => {
       })
       setShowPopoverInner(true)
     }) ): triggerInner = triggerInner + 1;
-  },[operador])
+  },[operador])*/
 
-  useEffect(() => {
+  let opexList = () => {
+    triggerInner === 0 ? (operador?.length == 0 ? console.log() : axios.get('http://localhost:3006/operadores?name='+ '' ).then(res=>{
+      console.log(res.data.data)
+      //alert(res.data.msg)
+      setListInner(res.data.data[0])
+      res.data.data[0].forEach((item:any)=>{
+        innerdata1.push({
+          text: item.Nombre,
+          handler: () => {
+            setOper(item.Nombre)
+            Storage.IdEmpleado = item.IdEmpleado
+            Storage.operador= item.Nombre
+            setShowPopoverInner(false)
+          }
+        })
+        setListInnerData(innerdata1)
+      })
+      setShowPopoverInner(true)
+    }) ): triggerInner = triggerInner + 1;
+  }
+
+  /*useEffect(() => {
     triggerInner2 === 0 ? (place?.length == 0 ? console.log() : axios.get('http://localhost:3006/obras?name=' + place).then(res => {
       //alert(res.data.msg)
       setListInner(res.data[0])
@@ -102,7 +123,27 @@ const One: React.FC = ({}) => {
       })
       setShowPopoverInner2(true)
     })) : triggerInner2 = triggerInner2 + 1;
-  }, [place])
+  }, [place]) */
+
+  let placeList = () => {
+    triggerInner2 === 0 ? (place?.length == 0 ? console.log() : axios.get('http://localhost:3006/obras?name=' + '').then(res => {
+      //alert(res.data.msg)
+      setListInner(res.data[0])
+      res.data[0].forEach((item:any)=>{
+        innerdata2.push({
+          text: item.IdObra,
+          handler: () => {
+            setPlace(item.IdObra);
+              Storage.IdObra = item.IdObra;
+              Storage.place = item.Descripcion;
+              setShowPopoverInner2(false);
+            }
+        })
+        setListInnerData2(innerdata2)
+      })
+      setShowPopoverInner2(true)
+    })) : triggerInner2 = triggerInner2 + 1;
+  }
 
   return( 
     <span>
@@ -195,7 +236,7 @@ const One: React.FC = ({}) => {
               debounce={450}
               color="duop"
               clearInput={true}
-              onIonChange={(e) => setOper(e.detail.value!)}
+              onClick={ () => opexList() }
             ></IonInput>
           </IonItem>
         </IonCol>
@@ -224,7 +265,7 @@ const One: React.FC = ({}) => {
               value={place}
               debounce={500}
               clearInput={true}
-              onIonChange={e => setPlace(e.detail.value!)}
+              onClick={ () => opexList() }
               color="duop"
             ></IonInput>
           </IonItem>
@@ -645,6 +686,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     console.log(Storage.machines);
   }, [machine]);
   //---------------------
+  /*
   useEffect(() => {
     trigger === 0
       ? machine?.length == 0
@@ -687,13 +729,13 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
               setShowPopover(true);
             })
       : (trigger += 1);
-  }, [machine]);
+  }, [machine]);*/
   
   let machineList = () => {
     trigger === 0
       ? machine?.length == 0
         ? console.log()
-        : axios.get("http://localhost:3006/equipos/main?name=" + machine)
+        : axios.get("http://localhost:3006/equipos/main?name=" + '')
             .then((res) => {
               console.log(res.data[0]);
               //alert(res.data.msg)
@@ -815,7 +857,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       const data = {
         IdEquipo: IdMaquina,
         IdEmpleadoOperador: IdEmpleado,
-        IdObraDestino :IdObra,
+        IdObra :IdObra,
         // Fecha: new Date(),
         ContadorInicial: hnicial, //Horometro Inicial
         ContadorFinal: hfinal, //Horometro Inicial
