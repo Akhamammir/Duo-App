@@ -7,9 +7,10 @@ interface ContainerProps {
   name: string;
   history: any;
 }
-const [usr, setUser] = useState<string>();
-const [pwd, setPwd] = useState<string>();
+
 const ExploreContainer: React.FC<ContainerProps> = ({ name, history }) => {
+  const [usr, setUser] = useState<string>();
+const [pwd, setPwd] = useState<string>();
   return (
     <div className="container">
       <img src={logo} width="60%"/>

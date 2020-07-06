@@ -45,7 +45,7 @@ const Main: React.FC<ContainerProps> = ({history}) => {
               fill="clear"
               onClick={
                 ()=>{
-                  history.goBack('/')
+                  history.replace('/')
                 }
               }
             >

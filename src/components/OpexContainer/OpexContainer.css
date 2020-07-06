@@ -43,3 +43,8 @@ ion-toggle {
   .actionsheet{
     font-family: 'Quicksand', sans-serif;
   }
+  .logo{
+    margin-top: 10vh;
+    height: 20vh;
+    margin-bottom: 5vh;
+  }

@@ -4,8 +4,9 @@ import {
   IonInput, IonItem, IonLabel, IonButton, IonGrid,
    IonRow, IonCol, IonDatetime, IonToggle, IonSegment,
     IonSegmentButton, useIonViewDidEnter, IonPopover,IonList,
-     IonAvatar, IonTextarea,IonActionSheet
+     IonAvatar, IonTextarea,IonActionSheet, IonImg, IonToast
 } from '@ionic/react';
+import logo from './../logo.png'
 import { trash, share, caretForwardCircle, heart, close } from 'ionicons/icons';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import axios from 'axios';
@@ -13,7 +14,7 @@ interface ContainerProps {
   name: string;
   history: any;
 }
-let Storage = {
+let Storage:{ [key: string]: any } = {
   machines:'', operador:'', place:'',
   hinicialT:'', hfinalT:'',
   hinicialM:'', hfinalM:'', hinicialO:'',
@@ -21,7 +22,7 @@ let Storage = {
   gas:'', grease:'', diesel:'',
   oil:'', oilM:'', oilT:'',
   IdMaquina:'', IdEmpleado:'',IdObra:'',
-  tipoCombustible:''
+  tipoCombustible:'', checked:false
 }
 
 let triggerInner = -1, triggerInner2 = -1, trigger = -1;
@@ -237,6 +238,7 @@ const One: React.FC = ({}) => {
 const Two: React.FC = ({}) => {
   const [checked, setChecked] = useState(false);
   const [checked2, setChecked2] = useState(false);
+  const [checked3, setChecked3] = useState(false);
   const [hinicialT, setHiniT] = useState<string>();
   const [hfinalT, setHfinalT] = useState<string>();
   const [hinicialM, setHiniM] = useState<string>();
@@ -330,6 +332,19 @@ const Two: React.FC = ({}) => {
         <IonCol class="ion-text-center">Horas de Transporte:</IonCol>
       </IonRow>
       <IonRow>
+        <IonCol class="ion-text-start">Horas Ociosas?</IonCol>
+        <IonCol size="3">
+          <IonItem lines="none" className="Oof">
+            <IonToggle
+              checked={checked}
+              onIonChange={(e) => { setChecked(e.detail.checked); Storage.checked = checked }}
+            />
+            <IonLabel>{checked ? "Si" : "No"}</IonLabel>
+          </IonItem>
+        </IonCol>
+      </IonRow>
+      { checked ? 
+      (<IonRow>
         <IonCol>
           <IonItem>
             <IonLabel>De:</IonLabel>
@@ -358,7 +373,8 @@ const Two: React.FC = ({}) => {
             ></IonDatetime>
           </IonItem>
         </IonCol>
-      </IonRow>
+      </IonRow>) :
+      (<span></span>) }
       <IonRow>
         <IonCol></IonCol>
       </IonRow>
@@ -366,18 +382,18 @@ const Two: React.FC = ({}) => {
         <IonCol></IonCol>
       </IonRow>
       <IonRow>
-        <IonCol class="ion-text-start">Horas Ociosas?</IonCol>
+        <IonCol class="ion-text-start">Horas de transporte?</IonCol>
         <IonCol size="3">
           <IonItem lines="none" className="Oof">
             <IonToggle
-              checked={checked}
-              onIonChange={(e) => setChecked(e.detail.checked)}
+              checked={checked2}
+              onIonChange={(e) => setChecked2(e.detail.checked)}
             />
-            <IonLabel>{checked ? "Si" : "No"}</IonLabel>
+            <IonLabel>{checked2 ? "Si" : "No"}</IonLabel>
           </IonItem>
         </IonCol>
       </IonRow>
-      {checked || Storage.hinicialO !=="" || Storage.hfinalO !=="" ? (
+      {checked2 ? (
         <IonRow>
           <IonCol>
             <IonItem>
@@ -416,14 +432,14 @@ const Two: React.FC = ({}) => {
         <IonCol size="3">
           <IonItem lines="none" className="Oof">
             <IonToggle
-              checked={checked2}
-              onIonChange={(e) => setChecked2(e.detail.checked)}
+              checked={checked3}
+              onIonChange={(e) => setChecked3(e.detail.checked)}
             />
-            <IonLabel>{checked2 ? "Si" : "No"}</IonLabel>
+            <IonLabel>{checked3 ? "Si" : "No"}</IonLabel>
           </IonItem>
         </IonCol>
       </IonRow>
-      {checked2 || Storage.hinicialR !=="" || Storage.hfinalR !=="" ? (
+      {checked3 ? (
         <IonRow>
           <IonCol>
             <IonItem>
@@ -564,6 +580,7 @@ const Three: React.FC = ({}) => {
 
 const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
   const [machine, setInput] = useState<string>();
+  const [machineL, setInputL] = useState<string>();
   const [hnicial, setHini] = useState<string>();
   const [hfinal, setHFin] = useState<string>();
   const [position, setPos] = useState<string>();
@@ -571,9 +588,12 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
   const [Fecha, setFecha] = useState<string>();
   const [Folio, setFolio] = useState<string>();
   const [hnicialComb, setHiniComb] = useState<string>();
+  const [toastMsg, settoastMsg] = useState<string>();
+  const [toastColor, settoastColor] = useState<string>();
   const [list, setList] = useState([]);
   const [listData, setListData] = useState([]);
   const [showPopover, setShowPopover] = useState(false);
+  const [showToast1, setShowToast1] = useState(false);
   const testdata = [{
     text: 'RTX-008, Retroexcavadora mod 2013',
     handler: () => {
@@ -611,6 +631,9 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
   };
   useIonViewDidEnter(() => {
     setPos("0");
+    console.log(validator())
+    //android:windowSoftInputMode="adjustNothing"
+    //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
   });
   //----------------------
   useEffect(() => {
@@ -651,6 +674,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                     }).then(()=>{ 
                       Storage.IdMaquina = item.IdEquipo;
                       setInput(item.Nombre);
+                      setInputL(item.IdEquipo);
                     })
                     
                     Storage.tipoCombustible= item.TipoCombustible
@@ -665,63 +689,169 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       : (trigger += 1);
   }, [machine]);
   
+  let machineList = () => {
+    trigger === 0
+      ? machine?.length == 0
+        ? console.log()
+        : axios.get("http://localhost:3006/equipos/main?name=" + machine)
+            .then((res) => {
+              console.log(res.data[0]);
+              //alert(res.data.msg)
+              res.data[0].forEach((item:any)=>{
+                console.log(item)
+                listdata.push({
+                  text: item.IdEquipo + ', ' + item.Nombre,
+                  handler: () => {
+                    triggerInner = -1; triggerInner2 = -1; trigger = -1;
+                    setHini(item.ContadorActualEquipo)
+                    axios.get("http://localhost:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
+                      .then((res) => {
+                      console.log(res.data);
+                      Storage.operador = res.data[0][0].Nombre
+                      Storage.IdEmpleado = res.data[0][0].IdEmpleado
+                    })
+                    axios.get("http://localhost:3006/equipos/obras?name=" + item.IdObra)
+                      .then((res) => {
+                      console.log(res.data[0][0]);
+                      Storage.place = res.data[0][0].NombreCorto
+                      Storage.IdObra = res.data[0][0].IdObra
+                    }).then(()=>{ 
+                      Storage.IdMaquina = item.IdEquipo;
+                      setInput(item.Nombre);
+                      setInputL(item.IdEquipo);
+                    })
+                    
+                    Storage.tipoCombustible= item.TipoCombustible
+                    setShowPopover(false);
+                  }
+                })
+                setListData(listdata)
+              })
+              setList(res.data[0]);
+              setShowPopover(true);
+            })
+      : (trigger += 1);
+  }
+
   let numeroloogy = (x:string) => {
-    x = x.indexOf('.') != -1 && x.split('.')[1].length > 2 ? 
+    x = x && x.indexOf('.') != -1 && x.split('.')[1].length > 2 ? 
      x.split('.')[0] + '.' + x.split('.')[1].substring(0,1) : x;
     return x;
   }
-  const handleSubmit = () => {
-    const {
-      IdEmpleado,
-      IdMaquina,
-      IdObra,
-      hinicialM,
-      hfinalM, //Horas de transporte
-      hinicialR,
-      hfinalR, //Horas de Reparación
-      hinicialT,
-      hfinalT, //Horas de Trabajo
-      hinicialO,
-      hfinalO, //Horas Ociosas
-      machines,
-      operador,
-      diesel,
-      gas,
-      grease,
-      oil,
-      oilM,
-      oilT,
-      place,
-      tipoCombustible,
-    } = Storage;
+  let validator = () => {
+     let x = true;
 
-    const data = {
-      IdEquipo: IdMaquina,
-      IdEmpleadoOperador: IdEmpleado,
-      IdObra,
+     let start:{ [key: string]: any } =  {
+      machines:'', operador:'', place:'',
+      hinicialT:'', hfinalT:'',
+      hinicialM:'', hfinalM:'', hinicialO:'',
+      hfinalO:'', hinicialR:'', hfinalR:'',
+      gas:'', grease:'', diesel:'',
+      oil:'', oilM:'', oilT:'',
+      IdMaquina:'', IdEmpleado:'',IdObra:'',
+      tipoCombustible:'', checked:false
+    }
+    let data:{ [key: string]: any } = {
       // Fecha: new Date(),
       ContadorInicial: hnicial, //Horometro Inicial
       ContadorFinal: hfinal, //Horometro Inicial
-      HrsEspera:(new Date(hfinalM).getTime() - new Date(hinicialM).getTime()) / 3600000, //horas de trasnporte
-      //HrsInactivo:(new Date(hfinalO).getTime() - new Date(hinicialO).getTime()) / 3600000, //Horas Ociosas
-      //HrsMantenimiento:(new Date(hfinalR).getTime() - new Date(hinicialR).getTime()) / 3600000, //Horas de Reparación
-      HrsEfectivo:(new Date(hfinalT).getTime() - new Date(hinicialT).getTime()) / 3600000, //Horas de Trabajo
-      TipoCombustible:tipoCombustible,
-      CantidadGas: gas,
-      CantidadDiesel:diesel,
-      CantidadGrease:grease,
-      CantidadOil:oil,
-      CantidadOilM:oilM,
-      CantidadOilT:oilT,
       FolioInternoSuministro:Folio,
       Notas:Notas, Fecha:Fecha,
       ContadorEquipo: hnicialComb
-    };
-    // console.log("Submit_PrintStorage", Storage)
-    // console.log("Submit_PrintSubmitData", data)
-    axios.post('http://localhost:3006/registro', { data })
-    .then(res => { console.log(res);})
-    .catch( error => console.log(error));
+    }
+    for(let key in start){
+      //console.log(key)
+      if (Storage[key] == start[key]){
+        //console.log(Storage[key], start[key], (Storage[key] == start[key]) )
+        x = false;
+      }
+    }
+    for(let key2 in data){
+      if (data[key2] == undefined || data[key2] == '') {
+        x=false
+      } 
+    }
+
+     return x;
+  }
+  let Setup = () => {
+    Storage = {
+      machines:'', operador:'', place:'',
+      hinicialT:'', hfinalT:'',
+      hinicialM:'', hfinalM:'', hinicialO:'',
+      hfinalO:'', hinicialR:'', hfinalR:'',
+      gas:'', grease:'', diesel:'',
+      oil:'', oilM:'', oilT:'',
+      IdMaquina:'', IdEmpleado:'',IdObra:'',
+      tipoCombustible:'', checked:false
+    }
+  }
+  const handleSubmit = () => {
+    if ( validator && +hfinal! > +hnicial! &&  (+hnicial!+12) > +hfinal! && +hnicialComb! > +hnicial! ) {
+      const {
+        IdEmpleado,
+        IdMaquina,
+        IdObra,
+        hinicialM,
+        hfinalM, //Horas de transporte
+        hinicialR,
+        hfinalR, //Horas de Reparación
+        hinicialT,
+        hfinalT, //Horas de Trabajo
+        hinicialO,
+        hfinalO, //Horas Ociosas
+        machines,
+        operador,
+        diesel,
+        gas,
+        grease,
+        oil,
+        oilM,
+        oilT,
+        place,
+        tipoCombustible,
+      } = Storage;
+  
+      const data = {
+        IdEquipo: IdMaquina,
+        IdEmpleadoOperador: IdEmpleado,
+        IdObraDestino :IdObra,
+        // Fecha: new Date(),
+        ContadorInicial: hnicial, //Horometro Inicial
+        ContadorFinal: hfinal, //Horometro Inicial
+        HrsEspera: Storage.checked ? (new Date(hfinalM).getTime() - new Date(hinicialM).getTime()) / 3600000 : 0, //horas de trasnporte
+        //HrsInactivo:(new Date(hfinalO).getTime() - new Date(hinicialO).getTime()) / 3600000, //Horas Ociosas
+        //HrsMantenimiento:(new Date(hfinalR).getTime() - new Date(hinicialR).getTime()) / 3600000, //Horas de Reparación
+        HrsEfectivo: +hfinal! - +hnicial!, //Horas de Trabajo
+        TipoCombustible:tipoCombustible,
+        CantidadGas: gas,
+        CantidadDiesel:diesel,
+        CantidadGrease:grease,
+        CantidadOil:oil,
+        CantidadOilM:oilM,
+        CantidadOilT:oilT,
+        FolioInternoSuministro:Folio,
+        Notas:Notas, Fecha:Fecha,
+        ContadorEquipo: hnicialComb
+      };
+      // console.log("Submit_PrintStorage", Storage)
+      // console.log("Submit_PrintSubmitData", data)
+      axios.post('http://localhost:3006/registro', { data }).then(res => {
+        console.log(res);
+        settoastColor("success")
+        settoastMsg("Registro realizado exitosamente!")
+        setShowToast1(true)
+      }).catch( error => {
+        console.log(error)
+        settoastColor("danger")
+        settoastMsg("Hubo un error, revisa el llenado de datos y tu conexion a internet!")
+        setShowToast1(true)
+      });
+    } else {
+      settoastColor("danger")
+      settoastMsg("Revisa tus datos!")
+      setShowToast1(true)
+    }
   };
       /*{ContadorInicial:hnicial, ContadorFinal:hfinal,HorasEfectivo: (new Date(Storage.hfinalT).getTime() - new Date(Storage.hinicialT).getTime())/3600000})*/
   return (
@@ -780,6 +910,14 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
         buttons={listData}
       >
       </IonActionSheet>
+      <IonToast
+        isOpen={showToast1}
+        onDidDismiss={() => setShowToast1(false)}
+        message= { toastMsg }
+        color= { toastColor }
+        duration={1750}
+      />
+      <IonImg src={logo} className="logo" />
       <IonGrid style={{ marginLeft: "5vw", marginRight: "5vw" }}>
       <IonRow>
         <IonCol>
@@ -820,13 +958,11 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                 Ingrese maquina
               </IonLabel>
               <IonInput
-                value={machine}
+                value={machineL}
                 color="duop"
                 clearInput={true}
                 debounce={450}
-                onIonChange={(e) => {
-                  setInput(e.detail.value!);
-                }}
+                onClick={ ()=>{ machineList() } }
               ></IonInput>
             </IonItem>
           </IonCol>
@@ -844,7 +980,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
           <IonCol>
           <IonItem>
               <IonLabel position="floating" color="duop">
-                Horometro Inicial
+                Horometro de Carga
               </IonLabel>
               <IonInput
                 value={hnicialComb}
