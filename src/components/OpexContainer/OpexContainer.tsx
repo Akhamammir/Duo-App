@@ -30,6 +30,9 @@ let triggerInner = -1, triggerInner2 = -1, trigger = -1;
 const One: React.FC = ({}) => {
   const [place, setPlace] = useState<string>();
   const [operador, setOper] = useState<string>();
+  const [toastMsgInner, settoastMsgInner] = useState<string>();
+  const [toastColorInner, settoastColorInner] = useState<string>();
+  const [showToastInner, setShowToastInner] = useState(false);
   const [showPopoverInner, setShowPopoverInner] = useState(false);
   const [showPopoverInner2, setShowPopoverInner2] = useState(false);
   const [listInner, setListInner] = useState([]);
@@ -64,7 +67,7 @@ const One: React.FC = ({}) => {
   }, [])
   
   /*useEffect( () => {
-    triggerInner === 0 ? (operador?.length == 0 ? console.log() : axios.get('http://localhost:3006/operadores?name='+operador).then(res=>{
+    triggerInner === 0 ? (operador?.length == 0 ? console.log() : axios.get('http://192.168.10.1:3006/operadores?name='+operador).then(res=>{
       console.log(res.data.data)
       //alert(res.data.msg)
       setListInner(res.data.data[0])
@@ -85,7 +88,8 @@ const One: React.FC = ({}) => {
   },[operador])*/
 
   let opexList = () => {
-    triggerInner === 0 ? (operador?.length == 0 ? console.log() : axios.get('http://localhost:3006/operadores?name='+ '' ).then(res=>{
+    triggerInner === 0 ? ( operador?.length == 0 ? console.log() :
+    axios.get('http://192.168.10.1:3006/operadores?name='+ '' ).then(res=>{
       console.log(res.data.data)
       //alert(res.data.msg)
       setListInner(res.data.data[0])
@@ -102,11 +106,16 @@ const One: React.FC = ({}) => {
         setListInnerData(innerdata1)
       })
       setShowPopoverInner(true)
-    }) ): triggerInner = triggerInner + 1;
+    }).catch( e => {
+      settoastColorInner("danger")
+      settoastMsgInner("Revisa tu conexion a internet!")
+      setShowToastInner(true)
+    } )
+    ): triggerInner = triggerInner + 1;
   }
 
   /*useEffect(() => {
-    triggerInner2 === 0 ? (place?.length == 0 ? console.log() : axios.get('http://localhost:3006/obras?name=' + place).then(res => {
+    triggerInner2 === 0 ? (place?.length == 0 ? console.log() : axios.get('http://192.168.10.1:3006/obras?name=' + place).then(res => {
       //alert(res.data.msg)
       setListInner(res.data[0])
       res.data[0].forEach((item:any)=>{
@@ -126,7 +135,8 @@ const One: React.FC = ({}) => {
   }, [place]) */
 
   let placeList = () => {
-    triggerInner2 === 0 ? (place?.length == 0 ? console.log() : axios.get('http://localhost:3006/obras?name=' + '').then(res => {
+    triggerInner2 === 0 ? (place?.length == 0 ? console.log() :
+    axios.get('http://192.168.10.1:3006/obras?name=' + '').then(res => {
       //alert(res.data.msg)
       setListInner(res.data[0])
       res.data[0].forEach((item:any)=>{
@@ -142,7 +152,12 @@ const One: React.FC = ({}) => {
         setListInnerData2(innerdata2)
       })
       setShowPopoverInner2(true)
-    })) : triggerInner2 = triggerInner2 + 1;
+    }).catch( e => {
+      settoastColorInner("danger")
+      settoastMsgInner("Revisa tu conexion a internet!")
+      setShowToastInner(true)
+    } )
+    ) : triggerInner2 = triggerInner2 + 1;
   }
 
   return( 
@@ -224,6 +239,13 @@ const One: React.FC = ({}) => {
         buttons={listInnerData2}
       >
       </IonActionSheet>
+      <IonToast
+        isOpen={showToastInner}
+        onDidDismiss={() => setShowToastInner(false)}
+        message= { toastMsgInner }
+        color= { toastColorInner }
+        duration={1750}
+      />
       <br />
       <IonRow>
         <IonCol>
@@ -265,7 +287,7 @@ const One: React.FC = ({}) => {
               value={place}
               debounce={500}
               clearInput={true}
-              onClick={ () => opexList() }
+              onClick={ () => placeList() }
               color="duop"
             ></IonInput>
           </IonItem>
@@ -691,7 +713,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     trigger === 0
       ? machine?.length == 0
         ? console.log()
-        : axios.get("http://localhost:3006/equipos/main?name=" + machine)
+        : axios.get("http://192.168.10.1:3006/equipos/main?name=" + machine)
             .then((res) => {
               console.log(res.data[0]);
               //alert(res.data.msg)
@@ -702,13 +724,13 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                   handler: () => {
                     triggerInner = -1; triggerInner2 = -1; trigger = -1;
                     setHini(item.ContadorActualEquipo)
-                    axios.get("http://localhost:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
+                    axios.get("http://192.168.10.1:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
                       .then((res) => {
                       console.log(res.data);
                       Storage.operador = res.data[0][0].Nombre
                       Storage.IdEmpleado = res.data[0][0].IdEmpleado
                     })
-                    axios.get("http://localhost:3006/equipos/obras?name=" + item.IdObra)
+                    axios.get("http://192.168.10.1:3006/equipos/obras?name=" + item.IdObra)
                       .then((res) => {
                       console.log(res.data[0][0]);
                       Storage.place = res.data[0][0].NombreCorto
@@ -735,7 +757,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     trigger === 0
       ? machine?.length == 0
         ? console.log()
-        : axios.get("http://localhost:3006/equipos/main?name=" + '')
+        : axios.get("http://192.168.10.1:3006/equipos/main?name=" + '')
             .then((res) => {
               console.log(res.data[0]);
               //alert(res.data.msg)
@@ -746,13 +768,13 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                   handler: () => {
                     triggerInner = -1; triggerInner2 = -1; trigger = -1;
                     setHini(item.ContadorActualEquipo)
-                    axios.get("http://localhost:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
+                    axios.get("http://192.168.10.1:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
                       .then((res) => {
                       console.log(res.data);
                       Storage.operador = res.data[0][0].Nombre
                       Storage.IdEmpleado = res.data[0][0].IdEmpleado
                     })
-                    axios.get("http://localhost:3006/equipos/obras?name=" + item.IdObra)
+                    axios.get("http://192.168.10.1:3006/equipos/obras?name=" + item.IdObra)
                       .then((res) => {
                       console.log(res.data[0][0]);
                       Storage.place = res.data[0][0].NombreCorto
@@ -771,7 +793,11 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
               })
               setList(res.data[0]);
               setShowPopover(true);
-            })
+            }).catch( e => {
+              settoastColor("danger")
+              settoastMsg("Revisa tu conexion a internet!")
+              setShowToast1(true)
+            } )
       : (trigger += 1);
   }
 
@@ -878,7 +904,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       };
       // console.log("Submit_PrintStorage", Storage)
       // console.log("Submit_PrintSubmitData", data)
-      axios.post('http://localhost:3006/registro', { data }).then(res => {
+      axios.post('http://192.168.10.1:3006/registro', { data }).then(res => {
         console.log(res);
         settoastColor("success")
         settoastMsg("Registro realizado exitosamente!")
@@ -912,13 +938,13 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                 onClick={() => {
                   triggerInner = -1; triggerInner2 = -1; trigger = -1;
                   setHini(item.ContadorActualEquipo)
-                  axios.get("http://localhost:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
+                  axios.get("http://192.168.10.1:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
                     .then((res) => {
                     console.log(res.data[0][0]);
                     Storage.operador = res.data[0][0].Nombre
                     Storage.IdEmpleado = res.data[0][0].IdEmpleado
                   })
-                  axios.get("http://localhost:3006/equipos/obras?name=" + item.IdObra)
+                  axios.get("http://192.168.10.1:3006/equipos/obras?name=" + item.IdObra)
                     .then((res) => {
                     console.log(res.data[0][0]);
                     Storage.place = res.data[0][0].NombreCorto
@@ -983,7 +1009,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
           <IonItem>
             <IonLabel>Fecha:</IonLabel>
             <IonDatetime
-              displayFormat="DD:MM:YYYY"
+              displayFormat="DD/MM/YYYY"
               value={Fecha}
               color="duop"
               onIonChange={(e) => {
@@ -1004,6 +1030,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                 color="duop"
                 clearInput={true}
                 debounce={450}
+                readonly={true}
                 onClick={ ()=>{ machineList() } }
               ></IonInput>
             </IonItem>
