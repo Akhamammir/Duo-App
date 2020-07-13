@@ -22,7 +22,13 @@ let Storage:{ [key: string]: any } = {
   gas:'', grease:'', diesel:'',
   oil:'', oilM:'', oilT:'',
   IdMaquina:'', IdEmpleado:'',IdObra:'',
-  tipoCombustible:'', checked:false
+  tipoCombustible:'', checked:false,
+  gasDisplay: {
+    DIESEL:false,
+    GASOLINA:false,
+    //OTRO:false,
+    //ELECTRICIDAD:false
+  }
 }
 
 let triggerInner = -1, triggerInner2 = -1, trigger = -1;
@@ -577,46 +583,50 @@ const Three: React.FC = ({}) => {
   return (
     <span>
       <br />
+      { Storage.gasDisplay.Gasolina ?
       <IonRow>
-        <IonCol>
-          <IonItem>
-            <IonInput
-              value={gas}
-              placeholder="Gasolina"
-              color="duop"
-              type="number"
-              clearInput={true}
-              onIonChange={(e) => {
-                setGas(e.detail.value!)
-                Storage.gas=e.detail.value!
-              }}
-            ></IonInput>
-            <IonLabel position="fixed" color="duop">
-              Lts.
-            </IonLabel>
-          </IonItem>
-        </IonCol>
-      </IonRow>
+      <IonCol>
+        <IonItem>
+          <IonInput
+            value={gas}
+            placeholder="Gasolina"
+            color="duop"
+            type="number"
+            clearInput={true}
+            onIonChange={(e) => {
+              setGas(e.detail.value!)
+              Storage.gas=e.detail.value!
+            }}
+          ></IonInput>
+          <IonLabel position="fixed" color="duop">
+            Lts.
+          </IonLabel>
+        </IonItem>
+      </IonCol>
+    </IonRow> :
+    <span></span> }
+      { Storage.gasDisplay.Diesel ?
       <IonRow>
-        <IonCol>
-          <IonItem>
-            <IonInput
-              value={diesel}
-              placeholder="Diesel"
-              color="duop"
-              type="number"
-              clearInput={true}
-              onIonChange={(e) => {
-                setDiesel(e.detail.value!)
-                Storage.diesel=e.detail.value!
-              }}
-            ></IonInput>
-            <IonLabel position="fixed" color="duop">
-              Lts.
-            </IonLabel>
-          </IonItem>
-        </IonCol>
-      </IonRow>
+      <IonCol>
+        <IonItem>
+          <IonInput
+            value={diesel}
+            placeholder="Diesel"
+            color="duop"
+            type="number"
+            clearInput={true}
+            onIonChange={(e) => {
+              setDiesel(e.detail.value!)
+              Storage.diesel=e.detail.value!
+            }}
+          ></IonInput>
+          <IonLabel position="fixed" color="duop">
+            Lts.
+          </IonLabel>
+        </IonItem>
+      </IonCol>
+    </IonRow> : 
+    <span></span> }
       <IonRow>
         <IonCol>
           <IonItem>
@@ -648,6 +658,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
   const [hfinal, setHFin] = useState<string>();
   const [position, setPos] = useState<string>();
   const [Notas, setNotas] = useState<string>();
+  const [NotasComb, setNotasComb] = useState<string>();
   const [Fecha, setFecha] = useState<string>();
   const [Folio, setFolio] = useState<string>();
   const [hnicialComb, setHiniComb] = useState<string>();
@@ -657,6 +668,8 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
   const [listData, setListData] = useState([]);
   const [showPopover, setShowPopover] = useState(false);
   const [showToast1, setShowToast1] = useState(false);
+  const [enableButton, setenableButton] = useState(false);
+
   const testdata = [{
     text: 'RTX-008, Retroexcavadora mod 2013',
     handler: () => {
@@ -685,16 +698,21 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       console.log('Cancel clicked');
     }
   }]
+
   const listdata:any= []
+
   const scanCode = async () => {
     const data = await BarcodeScanner.scan();
     //alert(JSON.stringify(data));
     let x = data.text;
     setInput(x);
   };
+
   useIonViewDidEnter(() => {
     setPos("0");
-    console.log(validator())
+    console.log(validator());
+    Reset();
+    setenableButton(true)
     //android:windowSoftInputMode="adjustNothing"
     //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
   });
@@ -703,6 +721,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     Storage.machines = machine!;
     console.log(Storage.machines);
   }, [machine]);
+
   useMemo(() => {
     Storage.machines = machine!;
     console.log(Storage.machines);
@@ -754,8 +773,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
   }, [machine]);*/
   
   let machineList = () => {
-    trigger === 0
-      ? machine?.length == 0
+      machine?.length == 0
         ? console.log()
         : axios.get("http://192.168.10.1:3006/equipos/main?name=" + '')
             .then((res) => {
@@ -784,8 +802,8 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                       setInput(item.Nombre);
                       setInputL(item.IdEquipo);
                     })
-                    
                     Storage.tipoCombustible= item.TipoCombustible
+                    Storage.gasDisplay[Storage.tipoCombustible.trim()] = true
                     setShowPopover(false);
                   }
                 })
@@ -798,14 +816,37 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
               settoastMsg("Revisa tu conexion a internet!")
               setShowToast1(true)
             } )
-      : (trigger += 1);
   }
+
+  let Reset = (() => {
+    Storage = {
+      machines:'', operador:'', place:'',
+      hinicialT:'', hfinalT:'',
+      hinicialM:'', hfinalM:'', hinicialO:'',
+      hfinalO:'', hinicialR:'', hfinalR:'',
+      gas:'', grease:'', diesel:'',
+      oil:'', oilM:'', oilT:'',
+      IdMaquina:'', IdEmpleado:'',IdObra:'',
+      tipoCombustible:'', checked:false,
+      gasDisplay: {
+        DIESEL:false,
+        GASOLINA:false,
+        //OTRO:false,
+        //ELECTRICIDAD:false
+      }
+    }
+    setFolio('');
+    setFecha('');
+    setInput('');
+    setHini('');
+  });
 
   let numeroloogy = (x:string) => {
     x = x && x.indexOf('.') != -1 && x.split('.')[1].length > 2 ? 
      x.split('.')[0] + '.' + x.split('.')[1].substring(0,1) : x;
     return x;
   }
+
   let validator = () => {
      let x = true;
 
@@ -842,6 +883,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
 
      return x;
   }
+
   let Setup = () => {
     Storage = {
       machines:'', operador:'', place:'',
@@ -854,8 +896,10 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       tipoCombustible:'', checked:false
     }
   }
+
   const handleSubmit = () => {
     if ( validator && +hfinal! > +hnicial! &&  (+hnicial!+12) > +hfinal! && +hnicialComb! > +hnicial! ) {
+      setenableButton(false)
       const {
         IdEmpleado,
         IdMaquina,
@@ -900,20 +944,21 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
         CantidadOilT:oilT,
         FolioInternoSuministro:Folio,
         Notas:Notas, Fecha:Fecha,
-        ContadorEquipo: hnicialComb
+        ContadorEquipo: hnicialComb, NotasComb:NotasComb
       };
-      // console.log("Submit_PrintStorage", Storage)
-      // console.log("Submit_PrintSubmitData", data)
+
       axios.post('http://192.168.10.1:3006/registro', { data }).then(res => {
         console.log(res);
         settoastColor("success")
         settoastMsg("Registro realizado exitosamente!")
         setShowToast1(true)
+        setenableButton(true)
       }).catch( error => {
         console.log(error)
         settoastColor("danger")
         settoastMsg("Hubo un error, revisa el llenado de datos y tu conexion a internet!")
         setShowToast1(true)
+        setenableButton(true)
       });
     } else {
       settoastColor("danger")
@@ -921,7 +966,9 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       setShowToast1(true)
     }
   };
-      /*{ContadorInicial:hnicial, ContadorFinal:hfinal,HorasEfectivo: (new Date(Storage.hfinalT).getTime() - new Date(Storage.hinicialT).getTime())/3600000})*/
+      /*
+      {ContadorInicial:hnicial, ContadorFinal:hfinal,HorasEfectivo: (new Date(Storage.hfinalT).getTime() - new Date(Storage.hinicialT).getTime())/3600000})
+      */
   return (
     <div className="container">
       <IonPopover
@@ -1012,6 +1059,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
               displayFormat="DD/MM/YYYY"
               value={Fecha}
               color="duop"
+              mode="ios"
               onIonChange={(e) => {
                 setFecha(e.detail.value!)
               }}
@@ -1056,6 +1104,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                 color="duop"
                 type="number"
                 readonly={false}
+                clearInput={true}
                 onIonChange={e => setHiniComb(e.detail.value!)}
               ></IonInput>
             </IonItem>
@@ -1127,8 +1176,16 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
           <IonRow>
           <IonCol>
             <IonItem>
-              <IonLabel position="floating">Notas:</IonLabel>
-              <IonTextarea value={Notas} onIonChange={e => setNotas(e.detail.value!)}></IonTextarea>
+              <IonLabel position="floating">
+                { position == '2' ? 'Notas de combustible:' : 'Notas:' }
+              </IonLabel>
+              <IonTextarea
+                value={ ( position == '2' ? NotasComb : Notas ) }
+                onIonChange={
+                  e => 
+                    ( position == '2' ? setNotasComb( e.detail.value! ) : setNotas( e.detail.value! ) )
+                }
+              ></IonTextarea>
             </IonItem>
           </IonCol>
           </IonRow>
@@ -1151,6 +1208,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                 color="duop"
                 mode="ios"
                 expand="block"
+                disabled = { !enableButton }
                 onClick={()=>{handleSubmit()}}
               >
                 Aceptar

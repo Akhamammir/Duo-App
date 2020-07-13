@@ -48,3 +48,9 @@ ion-toggle {
     height: 20vh;
     margin-bottom: 5vh;
   }
+  ion-picker{
+    --border-color: #424242!important;
+  }
+  .picker-opt{
+    color:#212223!important;
+  }
