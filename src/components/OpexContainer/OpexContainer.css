@@ -3,8 +3,9 @@ ion-item{
     margin-right: 0vw;
   }
 ion-toggle {
-  --background-checked: #ffc16b;
-  --handle-background: #ffa424;
+  --background: #FFD699;
+  --background-checked: #FF9D0A;
+  --handle-background: #FFB647;
   --handle-background-checked: #ffa424;
   }
   .Oof{
@@ -27,10 +28,11 @@ ion-toggle {
     
   }
   ion-segment{
-    --background: #414141;
+    --background: #292929;
   }
   ion-segment-button{
-    --background-checked: #595959;
+    --color: #ffa424;
+    --color-checked: #292929;
     --indicator-color:#ffa424;
   }
   .popover-content{
@@ -54,3 +56,12 @@ ion-toggle {
   .picker-opt{
     color:#212223!important;
   }
+  .ion-text-start{
+    color: #ffa424;
+  }
+  .ion-text-center{
+    color: #ffa424;
+  }
+ion-button {
+  --color: #FFB647!important;
+}

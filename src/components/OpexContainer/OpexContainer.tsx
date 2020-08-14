@@ -73,7 +73,7 @@ const One: React.FC = ({}) => {
   }, [])
   
   /*useEffect( () => {
-    triggerInner === 0 ? (operador?.length == 0 ? console.log() : axios.get('http://192.168.10.1:3006/operadores?name='+operador).then(res=>{
+    triggerInner === 0 ? (operador?.length == 0 ? console.log() : axios.get('http://187.190.97.136:3006/operadores?name='+operador).then(res=>{
       console.log(res.data.data)
       //alert(res.data.msg)
       setListInner(res.data.data[0])
@@ -94,8 +94,7 @@ const One: React.FC = ({}) => {
   },[operador])*/
 
   let opexList = () => {
-    triggerInner === 0 ? ( operador?.length == 0 ? console.log() :
-    axios.get('http://192.168.10.1:3006/operadores?name='+ '' ).then(res=>{
+    axios.get('http://187.190.97.136:3006/operadores?name='+ '' ).then(res=>{
       console.log(res.data.data)
       //alert(res.data.msg)
       setListInner(res.data.data[0])
@@ -117,11 +116,10 @@ const One: React.FC = ({}) => {
       settoastMsgInner("Revisa tu conexion a internet!")
       setShowToastInner(true)
     } )
-    ): triggerInner = triggerInner + 1;
   }
 
   /*useEffect(() => {
-    triggerInner2 === 0 ? (place?.length == 0 ? console.log() : axios.get('http://192.168.10.1:3006/obras?name=' + place).then(res => {
+    triggerInner2 === 0 ? (place?.length == 0 ? console.log() : axios.get('http://187.190.97.136:3006/obras?name=' + place).then(res => {
       //alert(res.data.msg)
       setListInner(res.data[0])
       res.data[0].forEach((item:any)=>{
@@ -141,8 +139,7 @@ const One: React.FC = ({}) => {
   }, [place]) */
 
   let placeList = () => {
-    triggerInner2 === 0 ? (place?.length == 0 ? console.log() :
-    axios.get('http://192.168.10.1:3006/obras?name=' + '').then(res => {
+    axios.get('http://187.190.97.136:3006/obras?name=' + '').then(res => {
       //alert(res.data.msg)
       setListInner(res.data[0])
       res.data[0].forEach((item:any)=>{
@@ -163,7 +160,6 @@ const One: React.FC = ({}) => {
       settoastMsgInner("Revisa tu conexion a internet!")
       setShowToastInner(true)
     } )
-    ) : triggerInner2 = triggerInner2 + 1;
   }
 
   return( 
@@ -263,6 +259,7 @@ const One: React.FC = ({}) => {
               value={operador}
               debounce={450}
               color="duop"
+              readonly={true}
               clearInput={true}
               onClick={ () => opexList() }
             ></IonInput>
@@ -293,6 +290,7 @@ const One: React.FC = ({}) => {
               value={place}
               debounce={500}
               clearInput={true}
+              readonly={true}
               onClick={ () => placeList() }
               color="duop"
             ></IonInput>
@@ -368,6 +366,7 @@ const Two: React.FC = ({}) => {
               displayFormat="HH:mm"
               value={hinicialT}
               color="duop"
+              mode="ios"
               onIonChange={e => {
                 setHiniT(e.detail.value!)
                 Storage.hinicialT=e.detail.value!
@@ -382,6 +381,7 @@ const Two: React.FC = ({}) => {
               displayFormat="HH:mm"
               value={hfinalT}
               color="duop"
+              mode="ios"
               onIonChange={(e) => {
                 setHfinalT(e.detail.value!)
                 Storage.hfinalT=e.detail.value!
@@ -406,7 +406,7 @@ const Two: React.FC = ({}) => {
           <IonItem lines="none" className="Oof">
             <IonToggle
               checked={checked}
-              onIonChange={(e) => { setChecked(e.detail.checked); Storage.checked = checked }}
+              onIonChange={(e) => { setChecked(e.detail.checked); Storage.checked = e.detail.checked }}
             />
             <IonLabel>{checked ? "Si" : "No"}</IonLabel>
           </IonItem>
@@ -421,6 +421,7 @@ const Two: React.FC = ({}) => {
               displayFormat="HH:mm"
               value={hinicialM}
               color="duop"
+              mode="ios"
               onIonChange={(e) => {
                 setHiniM(e.detail.value!)
                 Storage.hinicialM=e.detail.value!
@@ -435,6 +436,7 @@ const Two: React.FC = ({}) => {
               displayFormat="HH:mm"
               value={hfinalM}
               color="duop"
+              mode="ios"
               onIonChange={(e) => {
                 setHfinalM(e.detail.value!)
                 Storage.hfinalM=e.detail.value!
@@ -471,6 +473,7 @@ const Two: React.FC = ({}) => {
                 displayFormat="HH:mm"
                 value={hinicialO}
                 color="duop"
+                mode="ios"
                 onIonChange={(e) => {
                   setHiniO(e.detail.value!)
                   Storage.hinicialO=e.detail.value!
@@ -485,6 +488,7 @@ const Two: React.FC = ({}) => {
                 displayFormat="HH:mm"
                 value={hfinalO}
                 color="duop"
+                mode="ios"
                 onIonChange={(e) => {
                   setHfinalO(e.detail.value!)
                   Storage.hfinalO=e.detail.value!
@@ -517,6 +521,7 @@ const Two: React.FC = ({}) => {
                 displayFormat="HH:mm"
                 value={hinicialR}
                 color="duop"
+                mode="ios"
                 onIonChange={(e) => {
                   setHiniR(e.detail.value!)
                   Storage.hinicialR=e.detail.value!
@@ -531,6 +536,7 @@ const Two: React.FC = ({}) => {
                 displayFormat="HH:mm"
                 value={hfinalR}
                 color="duop"
+                mode="ios"
                 onIonChange={(e) => {
                   setHfinalR(e.detail.value!)
                   Storage.hfinalR=e.detail.value!
@@ -553,9 +559,11 @@ const Three: React.FC = ({}) => {
   const [oil, setOil] = useState<string>();
   const [oilT, setOilT] = useState<string>();
   const [oilM, setOilM] = useState<string>();
+  const [enablegas, setenablegas] = useState(false);
   useEffect(() => {
     // Storage.gas = gas!;
-  }, [gas]);
+    console.log(100100100100010)
+  }, [Storage.tipoCombustible]);
   useEffect(() => {
     // Storage.diesel = diesel!;
   }, [diesel]);
@@ -579,11 +587,12 @@ const Three: React.FC = ({}) => {
     setOil(Storage.oil)
     setOilT(Storage.oilT)
     setOilM(Storage.oilM)
+    setenablegas(Storage.tipoCombustible.DIESEL)
   }, [])
   return (
     <span>
       <br />
-      { Storage.gasDisplay.Gasolina ?
+      { Storage.gasDisplay.GASOLINA ?
       <IonRow>
       <IonCol>
         <IonItem>
@@ -605,7 +614,7 @@ const Three: React.FC = ({}) => {
       </IonCol>
     </IonRow> :
     <span></span> }
-      { Storage.gasDisplay.Diesel ?
+      { Storage.gasDisplay.DIESEL ?
       <IonRow>
       <IonCol>
         <IonItem>
@@ -627,7 +636,7 @@ const Three: React.FC = ({}) => {
       </IonCol>
     </IonRow> : 
     <span></span> }
-      <IonRow>
+      { Storage.gasDisplay.CTHULU ? <IonRow>
         <IonCol>
           <IonItem>
             <IonInput
@@ -646,7 +655,8 @@ const Three: React.FC = ({}) => {
             </IonLabel>
           </IonItem>
         </IonCol>
-      </IonRow>
+      </IonRow>: 
+    <span></span>}
     </span>
   );
 };
@@ -705,6 +715,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     const data = await BarcodeScanner.scan();
     //alert(JSON.stringify(data));
     let x = data.text;
+    machineList(x)
     setInput(x);
   };
 
@@ -732,7 +743,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     trigger === 0
       ? machine?.length == 0
         ? console.log()
-        : axios.get("http://192.168.10.1:3006/equipos/main?name=" + machine)
+        : axios.get("http://187.190.97.136:3006/equipos/main?name=" + machine)
             .then((res) => {
               console.log(res.data[0]);
               //alert(res.data.msg)
@@ -743,13 +754,13 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                   handler: () => {
                     triggerInner = -1; triggerInner2 = -1; trigger = -1;
                     setHini(item.ContadorActualEquipo)
-                    axios.get("http://192.168.10.1:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
+                    axios.get("http://187.190.97.136:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
                       .then((res) => {
                       console.log(res.data);
                       Storage.operador = res.data[0][0].Nombre
                       Storage.IdEmpleado = res.data[0][0].IdEmpleado
                     })
-                    axios.get("http://192.168.10.1:3006/equipos/obras?name=" + item.IdObra)
+                    axios.get("http://187.190.97.136:3006/equipos/obras?name=" + item.IdObra)
                       .then((res) => {
                       console.log(res.data[0][0]);
                       Storage.place = res.data[0][0].NombreCorto
@@ -772,10 +783,8 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
       : (trigger += 1);
   }, [machine]);*/
   
-  let machineList = () => {
-      machine?.length == 0
-        ? console.log()
-        : axios.get("http://192.168.10.1:3006/equipos/main?name=" + '')
+  let machineList = (maq?:string) => {
+      axios.get("http://187.190.97.136:3006/equipos/main?name=" + (maq ? maq : ''))
             .then((res) => {
               console.log(res.data[0]);
               //alert(res.data.msg)
@@ -786,17 +795,18 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                   handler: () => {
                     triggerInner = -1; triggerInner2 = -1; trigger = -1;
                     setHini(item.ContadorActualEquipo)
-                    axios.get("http://192.168.10.1:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
+                    axios.get("http://187.190.97.136:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
                       .then((res) => {
                       console.log(res.data);
                       Storage.operador = res.data[0][0].Nombre
                       Storage.IdEmpleado = res.data[0][0].IdEmpleado
                     })
-                    axios.get("http://192.168.10.1:3006/equipos/obras?name=" + item.IdObra)
+                    axios.get("http://187.190.97.136:3006/equipos/obras?name=" + item.IdObra)
                       .then((res) => {
                       console.log(res.data[0][0]);
                       Storage.place = res.data[0][0].NombreCorto
                       Storage.IdObra = res.data[0][0].IdObra
+                      Storage.IdFamEq = res.data[0][0].IdFamiliaEquipo
                     }).then(()=>{ 
                       Storage.IdMaquina = item.IdEquipo;
                       setInput(item.Nombre);
@@ -804,6 +814,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                     })
                     Storage.tipoCombustible= item.TipoCombustible
                     Storage.gasDisplay[Storage.tipoCombustible.trim()] = true
+                    console.log(Storage)
                     setShowPopover(false);
                   }
                 })
@@ -839,6 +850,8 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     setFecha('');
     setInput('');
     setHini('');
+    setHFin('');
+    setInput('')
   });
 
   let numeroloogy = (x:string) => {
@@ -849,16 +862,18 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
 
   let validator = () => {
      let x = true;
-
-     let start:{ [key: string]: any } =  {
+     let start:{ [key: string]: any } =  Storage.checked ? {
       machines:'', operador:'', place:'',
-      hinicialT:'', hfinalT:'',
-      hinicialM:'', hfinalM:'', hinicialO:'',
-      hfinalO:'', hinicialR:'', hfinalR:'',
       gas:'', grease:'', diesel:'',
       oil:'', oilM:'', oilT:'',
       IdMaquina:'', IdEmpleado:'',IdObra:'',
-      tipoCombustible:'', checked:false
+      tipoCombustible:''
+    } : {
+      machines:'', operador:'', place:'',
+      gas:'', grease:'', diesel:'',
+      oil:'', oilM:'', oilT:'',
+      IdMaquina:'', IdEmpleado:'',IdObra:'',
+      tipoCombustible:''
     }
     let data:{ [key: string]: any } = {
       // Fecha: new Date(),
@@ -898,7 +913,10 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
   }
 
   const handleSubmit = () => {
-    if ( validator && +hfinal! > +hnicial! &&  (+hnicial!+12) > +hfinal! && +hnicialComb! > +hnicial! ) {
+    if ( validator && +hfinal! > +hnicial! && 
+       ( +hnicial! + ( Storage.IdFamEq == '3' ? 5000 : 12 ) ) > +hfinal! &&
+        +hnicialComb! > +hnicial! &&
+        (Storage.checked ? new Date(Storage.hfinalM).getTime() > new Date(Storage.hinicialM).getTime() : true)  ) {
       setenableButton(false)
       const {
         IdEmpleado,
@@ -947,12 +965,13 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
         ContadorEquipo: hnicialComb, NotasComb:NotasComb
       };
 
-      axios.post('http://192.168.10.1:3006/registro', { data }).then(res => {
+      axios.post('http://187.190.97.136:3006/registro', { data }).then(res => {
         console.log(res);
         settoastColor("success")
         settoastMsg("Registro realizado exitosamente!")
         setShowToast1(true)
         setenableButton(true)
+        Reset();
       }).catch( error => {
         console.log(error)
         settoastColor("danger")
@@ -985,13 +1004,13 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
                 onClick={() => {
                   triggerInner = -1; triggerInner2 = -1; trigger = -1;
                   setHini(item.ContadorActualEquipo)
-                  axios.get("http://192.168.10.1:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
+                  axios.get("http://187.190.97.136:3006/equipos/driver?name=" + item.IdEmpleadoOperador)
                     .then((res) => {
                     console.log(res.data[0][0]);
                     Storage.operador = res.data[0][0].Nombre
                     Storage.IdEmpleado = res.data[0][0].IdEmpleado
                   })
-                  axios.get("http://192.168.10.1:3006/equipos/obras?name=" + item.IdObra)
+                  axios.get("http://187.190.97.136:3006/equipos/obras?name=" + item.IdObra)
                     .then((res) => {
                     console.log(res.data[0][0]);
                     Storage.place = res.data[0][0].NombreCorto
