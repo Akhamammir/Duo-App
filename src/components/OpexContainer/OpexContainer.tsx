@@ -22,7 +22,7 @@ let Storage:{ [key: string]: any } = {
   gas:'', grease:'', diesel:'',
   oil:'', oilM:'', oilT:'',
   IdMaquina:'', IdEmpleado:'',IdObra:'',
-  tipoCombustible:'', checked:false,
+  tipoCombustible:'', checked:false, horCarga:'',
   gasDisplay: {
     DIESEL:false,
     GASOLINA:false,
@@ -561,10 +561,6 @@ const Three: React.FC = ({}) => {
   const [oilM, setOilM] = useState<string>();
   const [enablegas, setenablegas] = useState(false);
   useEffect(() => {
-    // Storage.gas = gas!;
-    console.log(100100100100010)
-  }, [Storage.tipoCombustible]);
-  useEffect(() => {
     // Storage.diesel = diesel!;
   }, [diesel]);
   useEffect(() => {
@@ -737,6 +733,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     Storage.machines = machine!;
     console.log(Storage.machines);
   }, [machine]);
+
   //---------------------
   /*
   useEffect(() => {
@@ -851,7 +848,11 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
     setInput('');
     setHini('');
     setHFin('');
-    setInput('')
+    setInput('');
+    setNotas('');
+    setNotasComb('');
+    setHiniComb('');
+    setHFin('');
   });
 
   let numeroloogy = (x:string) => {
@@ -914,7 +915,7 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
 
   const handleSubmit = () => {
     if ( validator && +hfinal! > +hnicial! && 
-       ( +hnicial! + ( Storage.IdFamEq == '3' ? 5000 : 12 ) ) > +hfinal! &&
+       ( +hnicial! + ( Storage.IdFamEq == '3' ? 500000 : 120000000 ) ) > +hfinal! &&
         +hnicialComb! > +hnicial! &&
         (Storage.checked ? new Date(Storage.hfinalM).getTime() > new Date(Storage.hinicialM).getTime() : true)  ) {
       setenableButton(false)
@@ -972,6 +973,10 @@ const OpexContainer: React.FC<ContainerProps> = ({ name, history }) => {
         setShowToast1(true)
         setenableButton(true)
         Reset();
+        setInput('');
+        setNotas('');
+        setHiniComb('');
+        setNotasComb('');
       }).catch( error => {
         console.log(error)
         settoastColor("danger")
